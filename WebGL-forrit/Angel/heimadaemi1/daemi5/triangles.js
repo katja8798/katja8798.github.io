@@ -1,10 +1,11 @@
 var canvas;
 var gl;
 
-var points;
-var rad = 0.4;
+
 var maxNumPoints = 200;       // Hámarksfjöldi punkta sem forritið ræður við!
-var index = 0;                // Númer núverandi punkts
+var index = 0;
+
+// Númer núverandi punkts
 
 window.onload = function init() {
 
@@ -38,28 +39,41 @@ window.onload = function init() {
         gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer);
 
         // Reikna heimshnit músarinnar út frá skjáhnitum
-        var t = vec2(2*e.offsetX/canvas.width-1, 2*(canvas.height-e.offsetY)/canvas.height-1);
+        var cent = vec2(2*e.offsetX/canvas.width-1, 2*(canvas.height-e.offsetY)/canvas.height-1);
 
-        const k = 3;
-        const dAngle = 2 * Math.PI / k;
-        for (let i = k; i >= 0; i--) {
-            let a = i * dAngle;
-            const p = vec2(rad * Math.sin(a) + cent[0], rad * Math.cos(a) + cent[1]);
-            points.push(p);
+        //create three points with mouse click in  center
+        var threePoints = createThreePoints(cent);
+
+        for (let i = 0; i < 3; i++) {
+            gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(threePoints[i]));
+
+            index++;
         }
-        // Færa þessi hnit yfir í grafíkminni, á réttan stað
-        gl.bufferSubData(gl.ARRAY_BUFFER, 8*index, flatten(t));
 
-        index++;
     } );
 
     render();
 }
 
+function createThreePoints(cent) {
+    var points = [];
+    var rad = 0.02;//size of triangles
+    var k = 3//number of points(corners)
+    var dAngle = 2*Math.PI/k;
+    for(let i=k; i>=0; i-- ) {
+        var a = i*dAngle;
+        var p = vec2( rad*Math.sin(a) + cent[0], rad*Math.cos(a) + cent[1] );
+        points.push(p);
+    }
+    return points;
+}
+
+
+
 function render() {
-    
+
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLES, 0, index);
+    gl.drawArrays( gl.TRIANGLES, 0, index );
 
     window.requestAnimFrame(render);
 }
