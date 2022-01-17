@@ -42,30 +42,24 @@ window.onload = function init() {
         var cent = vec2(2*e.offsetX/canvas.width-1, 2*(canvas.height-e.offsetY)/canvas.height-1);
 
         //create three points with mouse click in  center
-        var threePoints = createThreePoints(cent);
+        createTriangles(cent);
 
-        for (let i = 0; i < 3; i++) {
-            gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(threePoints[i]));
-
-            index++;
-        }
 
     } );
 
     render();
 }
 
-function createThreePoints(cent) {
-    var points = [];
+function createTriangles(cent) {
     var rad = 0.02;//size of triangles
     var k = 3//number of points(corners)
     var dAngle = 2*Math.PI/k;
-    for(let i=k; i>=0; i-- ) {
+    for(let i=k; i>0; i-- ) {
         var a = i*dAngle;
         var p = vec2( rad*Math.sin(a) + cent[0], rad*Math.cos(a) + cent[1] );
-        points.push(p);
+        gl.bufferSubData(gl.ARRAY_BUFFER, 8 * index, flatten(p));
+        index++;
     }
-    return points;
 }
 
 
