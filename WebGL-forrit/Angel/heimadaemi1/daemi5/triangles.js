@@ -36,14 +36,19 @@ window.onload = function init() {
     // Meðhöndlun á músarsmellum
     canvas.addEventListener("mousedown", function(e){
 
-        gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
-        // Reikna heimshnit músarinnar út frá skjáhnitum
-        var cent = vec2(2*e.offsetX/canvas.width-1, 2*(canvas.height-e.offsetY)/canvas.height-1);
+        if (e.button === 0) {
 
-        //create three points with mouse click in  center
-        createTriangles(cent);
+            // Reikna heimshnit músarinnar út frá skjáhnitum
+            var cent = vec2(2 * e.offsetX / canvas.width - 1, 2 * (canvas.height - e.offsetY) / canvas.height - 1);
 
+            //create three points with mouse click in center
+            createTriangles(cent);
+        }
+        else {
+            clearCanvas();
+        }
 
     } );
 
@@ -62,6 +67,10 @@ function createTriangles(cent) {
     }
 }
 
+function clearCanvas() {
+    //resetta buffer eins og það var í byrjun
+    gl.bufferData(gl.ARRAY_BUFFER, 8*maxNumPoints, gl.DYNAMIC_DRAW);
+}
 
 
 function render() {
