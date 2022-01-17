@@ -26,11 +26,14 @@ window.onload = function init()
 
     // Specify a starting point p for our iterations
     // p must lie inside any set of three vertices
-
+    /*
     const u = add(vertices[0], vertices[1]);
     const v = add(vertices[0], vertices[2]);
-    //var p = scale(0.25,vec2(100,100));
     let p = scale(0.25, add(u, v));
+    */
+    
+    //daemi 1 a)
+    var p = vec2(100,100);
 
     // And, add our initial point into our array of points
 
@@ -46,6 +49,17 @@ window.onload = function init()
         p = scale( 0.5, p );
         points.push( p );
     }
+
+
+    //daemi 1 b)
+    /*
+    for (let i = 0; points.length < NumPoints; ++i ) {
+        var c = chance();
+        p = add( points[i], vertices[c]);
+        p = scale( 0.5, p );
+        points.push( p );
+    }
+    */
 
     //
     //  Configure WebGL
@@ -72,6 +86,21 @@ window.onload = function init()
 
     render();
 };
+
+//fyrir daemi 1 b)
+function chance() {
+    const c = Math.random();
+    let pos;
+    if (c < 0.05) {
+        pos = 2;
+    } else if (c < 0.5) {
+        pos = 1;
+    }
+    else {
+        pos = 0;
+    }
+    return pos;
+}
 
 
 function render() {

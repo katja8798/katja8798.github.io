@@ -56,7 +56,7 @@ function render() {
 //    gl.drawArrays( gl.LINES, 0, 6 );
 //    gl.drawArrays( gl.LINE_STRIP, 0, 6 );
 //    gl.drawArrays( gl.LINE_LOOP, 0, 6 );
-//    gl.drawArrays( gl.TRIANGLES, 0, 6 );
-    gl.drawArrays( gl.TRIANGLE_STRIP, 0, 4 );
+    gl.drawArrays( gl.TRIANGLES, 0, 6 );
+//    gl.drawArrays( gl.TRIANGLE_STRIP, 0, 4 );
 //    gl.drawArrays( gl.TRIANGLE_FAN, 0, 6 );
 }
