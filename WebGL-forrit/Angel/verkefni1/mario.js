@@ -12,6 +12,7 @@ var cPlatform = vec4(0.0, 1.0, 0.0, 1.0);
 var v = [ vec2( -0.9, -0.95 ), vec2( -0.75,  -0.6 ), vec2( -0.75, -0.95 ),//mario
     vec2(  -1, -1 ), vec2(  -1,  -0.95 ), vec2(  1, -1 ), vec2(  1, -0.95 )]; //platform
 var buffer;
+var jump = false;
 
 window.onload = function init()
 {
@@ -40,22 +41,34 @@ window.onload = function init()
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
-        switch( e.keyCode ) {
-            case 37:	// vinstri ör
-                xmove = -0.03;
-                break;
-            case 39:	// hægri ör
-                xmove = 0.03;
-                break;
-            default:
-                xmove = 0.0;
-        }
-        for(i=0; i<4; i++) {
-            v[i][0] += xmove;
-        }
+        if (jump === false) {
+            switch (e.keyCode) {
+                case 37:	// vinstri ör
+                    xmove = -0.03;
+                    if (v[1][0] !== v[0][0]) {
+                        v[1][0] = v[0][0];
+                    }
+                    break;
+                case 39:	// hægri ör
+                    xmove = 0.03;
+                    if (v[1][0] !== v[2][0]) {
+                        v[1][0] = v[2][0];
+                    }
+                    break;
+                case 32:
+                    jump = true;
+                default:
+                    xmove = 0.0;
+            }
+            for (i = 0; i < 3; i++) {
+                v[i][0] += xmove;
+            }
 
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
-    } );
+            gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
+        }
+    });
+
+
 
     locColor = gl.getUniformLocation( program, "rcolor" );
 
@@ -77,4 +90,12 @@ function drawSpecific(type, c, f,n) {
     //gl.vertexAttribPointer( locPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.uniform4fv( locColor, flatten(c) );
     gl.drawArrays( type, f, n );
+}
+
+function run(){
+
+}
+
+function jump(){
+
 }

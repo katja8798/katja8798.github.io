@@ -1,11 +1,3 @@
-////////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Hnútalitarinn notar "uniform" tímabreytu til að færa y-hnit
-//     hnútanna á reglulegan hátt.  Einnig hægt að breyta lit með
-//     músarsmelli.
-//
-//    Hjálmtýr Hafsteinsson, janúar 2022
-////////////////////////////////////////////////////////////////////
 var gl;
 var points;
 
