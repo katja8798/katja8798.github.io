@@ -1,73 +1,80 @@
-/////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Sýnir notkun á lyklaborðsatburðum til að hreyfa spaða
-//
-//    Hjálmtýr Hafsteinsson, janúar 2022
-/////////////////////////////////////////////////////////////////
-var canvas;
 var gl;
 
+// Global variables (accessed in render)
+var locPosition;
+var locColor;
 
-window.onload = function init() {
+//colors
+var cMario = vec4(0.0, 0.0, 1.0, 1.0);
+var cPlatform = vec4(0.0, 1.0, 0.0, 1.0);
 
-    canvas = document.getElementById( "gl-canvas" );
-    
+//other
+var v = [ vec2( -0.9, -0.95 ), vec2( -0.75,  -0.6 ), vec2( -0.75, -0.95 ),//mario
+    vec2(  -1, -1 ), vec2(  -1,  -0.95 ), vec2(  1, -1 ), vec2(  1, -0.95 )]; //platform
+var buffer;
+
+window.onload = function init()
+{
+    var canvas = document.getElementById( "gl-canvas" );
+
     gl = WebGLUtils.setupWebGL( canvas );
     if ( !gl ) { alert( "WebGL isn't available" ); }
-    
-    gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.8, 0.8, 0.8, 1.0 );
 
-    //
+    //  Configure WebGL
+    gl.viewport( 0, 0, canvas.width, canvas.height );
+    gl.clearColor( 0.9, 0.9, 0.9, 1.0 );
+
     //  Load shaders and initialize attribute buffers
-    //
     var program = initShaders( gl, "vertex-shader", "fragment-shader" );
     gl.useProgram( program );
-    
-    var vertices = [
-        vec2( -0.1, -0.9 ),
-        vec2( -0.1, -0.86 ),
-        vec2(  0.1, -0.86 ),
-        vec2(  0.1, -0.9 ) 
-    ];
-    
-    // Load the data into the GPU
-    var bufferId = gl.createBuffer();
-    gl.bindBuffer( gl.ARRAY_BUFFER, bufferId );
-    gl.bufferData( gl.ARRAY_BUFFER, flatten(vertices), gl.DYNAMIC_DRAW );
 
-    // Associate out shader variables with our data buffer
-    var vPosition = gl.getAttribLocation( program, "vPosition" );
-    gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vPosition );
+    // Define two VBOs and load the data into the GPU
+    buffer = gl.createBuffer();
+    gl.bindBuffer( gl.ARRAY_BUFFER, buffer);
+    gl.bufferData( gl.ARRAY_BUFFER, flatten(v), gl.DYNAMIC_DRAW);
+
+    // Get location of shader variable vPosition
+    locPosition = gl.getAttribLocation( program, "vPosition" );
+    gl.vertexAttribPointer( locPosition, 2, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( locPosition );
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
         switch( e.keyCode ) {
             case 37:	// vinstri ör
-                xmove = -0.04;
+                xmove = -0.03;
                 break;
             case 39:	// hægri ör
-                xmove = 0.04;
+                xmove = 0.03;
                 break;
             default:
                 xmove = 0.0;
         }
         for(i=0; i<4; i++) {
-            vertices[i][0] += xmove;
+            v[i][0] += xmove;
         }
 
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
+        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
     } );
 
+    locColor = gl.getUniformLocation( program, "rcolor" );
+
     render();
-}
+};
 
 
 function render() {
-    
     gl.clear( gl.COLOR_BUFFER_BIT );
-    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );
 
-    window.requestAnimFrame(render);
+    drawSpecific(gl.TRIANGLES, cMario, 0,3);
+    drawSpecific(gl.TRIANGLE_STRIP, cPlatform, 3,4);
+
+    window.requestAnimationFrame(render);
+}
+
+function drawSpecific(type, c, f,n) {
+    //gl.bindBuffer( gl.ARRAY_BUFFER, buffer);
+    //gl.vertexAttribPointer( locPosition, 2, gl.FLOAT, false, 0, 0 );
+    gl.uniform4fv( locColor, flatten(c) );
+    gl.drawArrays( type, f, n );
 }
