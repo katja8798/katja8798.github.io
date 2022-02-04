@@ -16,7 +16,7 @@ var buffer;
 var jump = {UP: false,
             DOWN: false,
             COUNT: 0,
-            MAX: 30,
+            MAX: 20,
             GROUND: -0.95};
 
 var facingRight = true;
@@ -105,23 +105,32 @@ function drawSpecific(type, c, f,n) {
 }
 
 function JUMP(){
-    var speed = 0.0225;
+    var speed = 0.03;
     var dirn;
 
     if (jump.UP) {
-        if (jump.COUNT <= jump.MAX / 2) {
+        if (jump.COUNT <= jump.MAX/3) {
             dirn = Math.PI/3;
             jump.COUNT++;
-        } else if (jump.COUNT <= jump.MAX) {
+        } else if (jump.COUNT <= 2*jump.MAX/3) {
             dirn = Math.PI/4;
             jump.COUNT++;
-        } else {
+        }
+        else if (jump.COUNT <= jump.MAX) {
+            dirn = Math.PI/6;
+            jump.COUNT++;
+        }
+        else {
             jump.UP = false;
             jump.DOWN = true;
         }
     }
     if (jump.DOWN) {
-        if (jump.COUNT >= jump.MAX/2){
+        if (jump.COUNT >= 2*jump.MAX/3){
+            dirn = Math.PI*11/6;
+            jump.COUNT--;
+        }
+        else if (jump.COUNT >= jump.MAX/3) {
             dirn = Math.PI*7/4;
             jump.COUNT--;
         }
@@ -137,12 +146,7 @@ function JUMP(){
     }
 
     if (!facingRight) {
-        if (jump.COUNT <= jump.MAX/2) {
-            dirn *= 2;
-        }
-        else if (jump.COUNT <= jump.MAX) {
-            dirn *= 3;
-        }
+        dirn = Math.PI-dirn;
     }
 
     if (jump.COUNT === 0) {
