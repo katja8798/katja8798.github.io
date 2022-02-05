@@ -4,34 +4,44 @@ let gl;
 let locPosition;
 let locColor;
 
-//colors
-const cMario = vec4(0.0, 0.0, 1.0, 1.0);
-const cPlatform = vec4(0.0, 1.0, 0.0, 1.0);
-const cGold = vec4(1.0, 1.0, 0.0, 1.0);
-
 //other
-const v = [
-    vec2(-0.9, -0.95), vec2(-0.9, -0.45), vec2(-0.75, -0.95),//mario
-    vec2(-1, -1), vec2(-1, -0.95), vec2(1, -1), vec2(1, -0.95)];//platform
+const v = [//(x,y)
+    //mario
+    vec2(-0.9, -0.9),
+    vec2(-0.9, -0.45),
+    vec2(-0.75, -0.9),
+    //platform
+    vec2(-1, -1),
+    vec2(-1, -0.9),
+    vec2(1, -1),
+    vec2(1, -0.9)];
 
-let buffer;
 
 const gold = {
-    CURR_LP: [0,0,0],//current lifespan
-    LIFESPAN: 120,//how long it "alive"
+    CURR_LP: [0,0,0],//current lifespan of all gold
+    LIFESPAN: 500,//how long it is "alive"
     COUNT: 0,//number of gold active
     MAX: 3,//maximum 3 gold at a time
+    COLOR: vec4(1.0, 1.0, 0.0, 1.0),
+    WIDTH: 0.05,
+    HEIGHT: 0.1
 };
 
-const jump = {
+const Mario = {
     UP: false,
     DOWN: false,
-    COUNT: 0,
-    MAX: 42,
-    GROUND: -0.95
+    COUNT: 0,//Regarding jump
+    MAX: 42,//Regarding jump
+    GROUND: -0.9,
+    FACING: true, //TRUE = right and FALSE = left
+    COLOR: vec4(0.0, 0.0, 1.0, 1.0),
+    GOLD_COUNT: 0
 };
 
-let facingRight = true;
+const platform = {
+    COLOR: vec4(0.0, 1.0, 0.0, 1.0)
+}
+
 
 window.onload = function init()
 {
@@ -49,7 +59,7 @@ window.onload = function init()
     gl.useProgram( program );
 
     // Define Buffer and load the data into the GPU
-    buffer = gl.createBuffer();
+    let buffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, buffer);
     gl.bufferData( gl.ARRAY_BUFFER, 8*200, gl.DYNAMIC_DRAW);
 
@@ -60,24 +70,24 @@ window.onload = function init()
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
-        if (jump.UP === false && jump.DOWN === false) {
+        if (Mario.UP === false && Mario.DOWN === false) {
             switch (e.keyCode) {
                 case 37:	// vinstri ör
                     xmove = -0.03;
-                    if (facingRight === true) {
+                    if (Mario.FACING) {
                         v[1][0] = v[2][0];
-                        facingRight = false;
+                        Mario.FACING = false;
                     }
                     break;
                 case 39:	// hægri ör
                     xmove = 0.03;
-                    if (facingRight === false) {
+                    if (!Mario.FACING) {
                         v[1][0] = v[0][0];
-                        facingRight = true;
+                        Mario.FACING = true;
                     }
                     break;
                 case 32: //Space takki
-                    jump.UP = true;
+                    Mario.UP = true;
                     break;
                 default:
                     xmove = 0.0;
@@ -86,11 +96,13 @@ window.onload = function init()
                 v[i][0] += xmove;
             }
 
+            if (Mario.colliding()) {
+                Mario.GOLD_COUNT++;
+            }
+
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
         }
     });
-
-
 
     locColor = gl.getUniformLocation( program, "rcolor" );
 
@@ -101,36 +113,36 @@ window.onload = function init()
 function render() {
     gl.clear( gl.COLOR_BUFFER_BIT );
 
-    if (jump.DOWN === true || jump.UP === true) {
-        JUMP();
+    if (Mario.DOWN === true || Mario.UP === true) {
+        Mario.JUMP();
     }
 
     //Randomly make gold if maximum hasn't been reached
     if (gold.COUNT < gold.MAX) {
-        chanceGold(10);
+        gold.maybeCreateGold();
     }
 
     //decrease lifespan of active gold
     if (gold.COUNT > 0) {
-        console.log("Gold count :" + gold.COUNT);
-        for(let i = gold.COUNT-1; i >= 0; i--){
-            if (gold.CURR_LP[i] === 0) {
-                gold.COUNT--;
-                gold.CURR_LP.splice(i, 1);
-                v.splice(7+i*4, 4);
-                gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v))
-            }
+        for(let i = 0; i < gold.COUNT; i++){
+
+            //decrease lifespan
             gold.CURR_LP[i]--;
+
+            //check if "dead"
+            if (gold.isDead(i)) {
+                gold.destroy(i);
+            }
         }
     }
 
-    drawSpecific(gl.TRIANGLES, cMario, 0,3);
-    drawSpecific(gl.TRIANGLE_STRIP, cPlatform, 3,4);
+    drawSpecific(gl.TRIANGLES, Mario.COLOR, 0,3);
+    drawSpecific(gl.TRIANGLE_STRIP, platform.COLOR, 3,4);
 
     //Only render of there is any gold
     if(gold.COUNT > 0) {
         for (let i = 0; i < gold.COUNT; i++) {
-            drawSpecific(gl.TRIANGLE_STRIP, cGold, 7+i*4,4);
+            drawSpecific(gl.TRIANGLE_STRIP, gold.COLOR, 7+i*4,4);
         }//
     }
 
@@ -142,57 +154,57 @@ function drawSpecific(type, c, f,n) {
     gl.drawArrays( type, f, n );
 }
 
-function JUMP(){
+Mario.JUMP = function (){
     const speed = 0.035;
     let angle;
 
-    if (jump.UP) {//upward "arc"
-        if (jump.COUNT <= jump.MAX/3) {
+    if (Mario.UP) {//upward "arc"
+        if (Mario.COUNT <= Mario.MAX/3) {
             angle = Math.PI*17/36;//85
-            jump.COUNT++;
-        } else if (jump.COUNT <= 2*jump.MAX/3) {
+            Mario.COUNT++;
+        } else if (Mario.COUNT <= 2*Mario.MAX/3) {
             angle = Math.PI*5/12;//75
-            jump.COUNT++;
+            Mario.COUNT++;
         }
-        else if (jump.COUNT <= jump.MAX) {
+        else if (Mario.COUNT <= Mario.MAX) {
             angle = Math.PI/3;//60
-            jump.COUNT++;
+            Mario.COUNT++;
         }
         else {
-            jump.UP = false;
-            jump.DOWN = true;
+            Mario.UP = false;
+            Mario.DOWN = true;
         }
     }
-    if (jump.DOWN) {//Downward "arc"
-        if (jump.COUNT >= 2*jump.MAX/3){
+    if (Mario.DOWN) {//Downward "arc"
+        if (Mario.COUNT >= 2*Mario.MAX/3){
             angle = Math.PI*5/3;//300
-            jump.COUNT--;
+            Mario.COUNT--;
         }
-        else if (jump.COUNT >= jump.MAX/3) {
+        else if (Mario.COUNT >= Mario.MAX/3) {
             angle = Math.PI*19/12;//285
-            jump.COUNT--;
+            Mario.COUNT--;
         }
-        else if (jump.COUNT > 0) {
+        else if (Mario.COUNT > 0) {
             angle = Math.PI*55/36;//360-85=300-25=290-15=
-            jump.COUNT--;
+            Mario.COUNT--;
         }
-        else if (jump.COUNT <= 0) {
-            jump.UP = false;
-            jump.DOWN = false;
-            jump.COUNT = 0;
+        else if (Mario.COUNT <= 0) {
+            Mario.UP = false;
+            Mario.DOWN = false;
+            Mario.COUNT = 0;
         }
     }
 
-    if (!facingRight) {
+    if (!Mario.FACING) {
         angle = Math.PI-angle;
     }
 
-    if (jump.COUNT === 0) {
+    if (Mario.COUNT === 0) {
         for (let i = 0; i < 3; i++){
             switch (i){
                 case 0:
                 case 2:
-                    v[i][1] = jump.GROUND;
+                    v[i][1] = Mario.GROUND;
                     break;
                 case 1:
                     v[i][1] = -0.45;
@@ -204,25 +216,64 @@ function JUMP(){
             v[i][0] += speed * Math.cos(angle);
             v[i][1] += speed * Math.sin(angle);
         }
+        if (Mario.colliding()) {
+            Mario.GOLD_COUNT++;
+        }
+
     }
 
     //update buffer
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
 }
 
+Mario.colliding = function () {
+    let m_loc = {//is a triangle put in collision acts like a rectangle
+        x: v[0][0],
+        y: v[0][1],
+        w: Math.abs(v[0][0]-v[2][0]),//width
+        h: Math.abs(v[0][1]-v[1][1]),//height
+    };
+
+    for (let i = 0; i < gold.COUNT; i++) {
+        let g_loc = {//is a triangle put in collision acts like a rectangle
+            x: v[7+i*4][0],
+            y: v[7+i*4][1],
+            w: gold.WIDTH,
+            h: gold.HEIGHT
+        }
+        if(m_loc.x < g_loc.x + g_loc.w &&
+            m_loc.x + m_loc.w > g_loc.x &&
+            m_loc.y < g_loc.y + g_loc.h &&
+            m_loc.y + m_loc.h > g_loc.y) {
+            gold.CURR_LP[i] = 0;//"kill" gold
+            return true;
+        }
+    }
+    return false;
+};
+
 function getRandom (min, max) {
     return (min + Math.random() * (max - min));
 }
 
-function chanceGold(num){
+gold.maybeCreateGold = function (){
     const r = getRandom(0, 1000);
 
-    if (num > r && gold.COUNT < gold.MAX) {
-        //update number of gold "active"
-        gold.COUNT++;
+    //create gold depending on random factor
+    if (50 > r && this.COUNT < this.MAX) {
+        //update number of "alive" gold
+        this.COUNT++;
 
-        //Use count as a pseudo index and assign LifeSpan to that place
-        gold.CURR_LP[gold.COUNT-1] = gold.LIFESPAN;
+        let goldID;
+
+        //Create "new" gold by updating ONE lifespan where it can.
+        for (let i = 0; i < this.MAX; i++) {
+            if (this.CURR_LP[i] === 0) {
+                this.CURR_LP[i] = this.LIFESPAN;
+                goldID = i;//use the index as an pseudo id
+                break;
+            }
+        }
 
         //randomly decide where on screen it is
         const LeftRight = Math.random() < 0.5 ? -1 : 1;
@@ -230,13 +281,29 @@ function chanceGold(num){
         const yloc = Math.floor(getRandom(0, 90)) / 100 * TopBottom;
         const xloc = Math.floor(getRandom(0, 90)) / 100 * LeftRight;
 
-        //put the coords in v
-        v.push(vec2(xloc, yloc));
-        v.push(vec2(xloc, yloc-0.10));
-        v.push(vec2(xloc-0.05, yloc));
-        v.push(vec2(xloc-0.05, yloc-0.10));
+        //put the coords in v according to its pseudo index
+
+        v[7+goldID*4]=vec2(xloc, yloc);
+        v[8+goldID*4]=vec2(xloc, yloc+gold.HEIGHT);
+        v[9+goldID*4]=vec2(xloc+gold.WIDTH, yloc);
+        v[10+goldID*4]=vec2(xloc+gold.WIDTH, yloc+gold.HEIGHT);
 
         //update buffer
         gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
     }
+}
+
+gold.isDead = function(i) {
+    return gold.CURR_LP[i] <= 0;
+}
+
+gold.destroy = function(i) {
+    //gold "dead" so delete it
+    gold.COUNT--;
+    gold.CURR_LP[i] = 0;
+    v[7+i*4]=[null, null];
+    v[8+i*4]=[null, null];
+    v[9+i*4]=[null, null];
+    v[10+i*4]=[null, null];
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v))
 }
