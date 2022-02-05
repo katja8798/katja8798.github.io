@@ -71,3 +71,5 @@ function render() {
 
     window.requestAnimFrame(render);
 }
+
+function renderType() {zz}
