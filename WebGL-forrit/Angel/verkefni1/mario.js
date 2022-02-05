@@ -17,9 +17,8 @@ const v = [
 let buffer;
 
 const gold = {
-    INDEXINV: [],
     CURR_LP: [0,0,0],//current lifespan
-    LIFESPAN: 10,//how long it "alive"
+    LIFESPAN: 120,//how long it "alive"
     COUNT: 0,//number of gold active
     MAX: 3,//maximum 3 gold at a time
 };
@@ -113,12 +112,15 @@ function render() {
 
     //decrease lifespan of active gold
     if (gold.COUNT > 0) {
+        console.log("Gold count :" + gold.COUNT);
         for(let i = gold.COUNT-1; i >= 0; i--){
-            gold.CURR_LP[i]--;
             if (gold.CURR_LP[i] === 0) {
+                gold.COUNT--;
                 gold.CURR_LP.splice(i, 1);
                 v.splice(7+i*4, 4);
+                gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v))
             }
+            gold.CURR_LP[i]--;
         }
     }
 
