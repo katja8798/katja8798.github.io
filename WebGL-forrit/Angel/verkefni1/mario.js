@@ -169,14 +169,14 @@ Mario.JUMP = function (){
 
     if (Mario.UP) {//upward "arc"
         if (Mario.COUNT <= Mario.MAX/3) {
-            angle = Math.PI*17/36;//85
+            angle = Math.PI*17/36;//85°
             Mario.COUNT++;
         } else if (Mario.COUNT <= 2*Mario.MAX/3) {
-            angle = Math.PI*5/12;//75
+            angle = Math.PI*5/12;//75°
             Mario.COUNT++;
         }
         else if (Mario.COUNT <= Mario.MAX) {
-            angle = Math.PI/3;//60
+            angle = Math.PI/3;//60°
             Mario.COUNT++;
         }
         else {
@@ -186,11 +186,11 @@ Mario.JUMP = function (){
     }
     if (Mario.DOWN) {//Downward "arc"
         if (Mario.COUNT >= 2*Mario.MAX/3){
-            angle = Math.PI*5/3;//300
+            angle = Math.PI*5/3;//300°
             Mario.COUNT--;
         }
         else if (Mario.COUNT >= Mario.MAX/3) {
-            angle = Math.PI*19/12;//285
+            angle = Math.PI*19/12;//285°
             Mario.COUNT--;
         }
         else if (Mario.COUNT > 0) {
@@ -225,6 +225,22 @@ Mario.JUMP = function (){
             v[i][0] += speed * Math.cos(angle);
             v[i][1] += speed * Math.sin(angle);
         }
+
+        // check if we're at the end of the screen
+        if (Mario.FACING) {
+            if (v[2][0] > 1) {
+                v[2][0] -= 2*speed * Math.cos(angle);
+                v[1][0] = v[2][0];
+                Mario.FACING  = !Mario.FACING;
+            }
+        }else {
+            if (v[0][0] <  -1) {
+                v[0][0] += 2*speed * Math.cos(angle);
+                v[1][0] = v[0][0];
+                Mario.FACING  = !Mario.FACING;
+            }
+        }
+
         if (Mario.colliding()) {
             Mario.GOLD_COUNT++;
             Mario.addScoreMark(Mario.GOLD_COUNT);
