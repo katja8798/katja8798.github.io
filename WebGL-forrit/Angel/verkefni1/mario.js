@@ -98,6 +98,7 @@ window.onload = function init()
 
             if (Mario.colliding()) {
                 Mario.GOLD_COUNT++;
+                Mario.addScoreMark(Mario.GOLD_COUNT);
             }
 
             gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
@@ -143,7 +144,14 @@ function render() {
     if(gold.COUNT > 0) {
         for (let i = 0; i < gold.COUNT; i++) {
             drawSpecific(gl.TRIANGLE_STRIP, gold.COLOR, 7+i*4,4);
-        }//
+        }
+    }
+
+    //Only do if caught gold is more than 0
+    if (Mario.GOLD_COUNT > 0) {
+        for (let i = 0; i < Mario.GOLD_COUNT; i++) {
+            drawSpecific(gl.TRIANGLE_STRIP, platform.COLOR, 19+i*4, 4);
+        }
     }
 
     window.requestAnimationFrame(render);
@@ -218,8 +226,8 @@ Mario.JUMP = function (){
         }
         if (Mario.colliding()) {
             Mario.GOLD_COUNT++;
+            Mario.addScoreMark(Mario.GOLD_COUNT);
         }
-
     }
 
     //update buffer
@@ -251,6 +259,23 @@ Mario.colliding = function () {
     }
     return false;
 };
+
+Mario.addScoreMark = function(s) {
+    const yloc = 0.6
+    const xloc = -0.9
+    var w = 0.04;
+    var h = 0.5;
+    const offsetX = 0.05
+
+    //put the coords in v according to its pseudo index
+    v[19 + (s-1) * 4] = vec2(xloc+(s-1)*offsetX, yloc);
+    v[20 + (s-1) * 4] = vec2(xloc+(s-1)*offsetX, yloc + h);
+    v[21 + (s-1) * 4] = vec2(xloc + w +(s-1)*offsetX, yloc);
+    v[22 + (s-1) * 4] = vec2(xloc + w +(s-1)*offsetX, yloc + h);
+
+    //update buffer
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v));
+}
 
 function getRandom (min, max) {
     return (min + Math.random() * (max - min));
@@ -307,3 +332,5 @@ gold.destroy = function(i) {
     v[10+i*4]=[null, null];
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(v))
 }
+
+
