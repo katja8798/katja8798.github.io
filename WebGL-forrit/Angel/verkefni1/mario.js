@@ -19,7 +19,7 @@ const v = [//(x,y)
 
 const gold = {
     CURR_LP: [0,0,0],//current lifespan of all gold
-    LIFESPAN: 500,//how long it is "alive"
+    LIFESPAN: 150,//how long it is "alive"
     COUNT: 0,//number of gold active
     MAX: 3,//maximum 3 gold at a time
     COLOR: vec4(1.0, 1.0, 0.0, 1.0),
@@ -74,27 +74,25 @@ window.onload = function init()
         if (Mario.UP === false &&
             Mario.DOWN === false &&
             Mario.GOLD_COUNT < 10) {
-            switch (e.keyCode) {
-                case 37:	// vinstri ör
-                    xmove = -0.03;
-                    if (Mario.FACING) {
-                        v[1][0] = v[2][0];
-                        Mario.FACING = false;
-                    }
-                    break;
-                case 39:	// hægri ör
-                    xmove = 0.03;
-                    if (!Mario.FACING) {
-                        v[1][0] = v[0][0];
-                        Mario.FACING = true;
-                    }
-                    break;
-                case 32: //Space takki
-                    Mario.UP = true;
-                    break;
-                default:
-                    xmove = 0.0;
+
+            if ( e.keyCode === 37 && v[0][0] > -0.97) {
+                xmove = -0.03;
+                if (Mario.FACING) {
+                    v[1][0] = v[2][0];
+                    Mario.FACING = false;
+                }
+            } else if ( e.keyCode === 39 && v[2][0] < 0.97) {
+                xmove = 0.03;
+                if (!Mario.FACING) {
+                    v[1][0] = v[0][0];
+                    Mario.FACING = true;
+                }
+            } else if ( e.keyCode === 32) {
+                Mario.UP = true;
+            } else {
+                xmove = 0.0;
             }
+
             for (let i = 0; i < 3; i++) {
                 v[i][0] += xmove;
             }
@@ -252,6 +250,7 @@ Mario.colliding = function () {
             w: gold.WIDTH,
             h: gold.HEIGHT
         }
+
         if(m_loc.x < g_loc.x + g_loc.w &&
             m_loc.x + m_loc.w > g_loc.x &&
             m_loc.y < g_loc.y + g_loc.h &&
@@ -265,7 +264,7 @@ Mario.colliding = function () {
 
 Mario.addScoreMark = function(s) {
     const yloc = 0.6
-    const xloc = -0.9
+    const xloc = -0.995
     var w = 0.04;
     var h = 0.5;
     const offsetX = 0.05
@@ -285,10 +284,10 @@ function getRandom (min, max) {
 }
 
 gold.maybeCreateGold = function (){
-    const r = getRandom(0, 1000);
+    let r = getRandom(0, 1000000000);
 
     //create gold depending on random factor
-    if (50 > r &&
+    if (1 < r &&
         this.COUNT < this.MAX &&
         Mario.GOLD_COUNT < 10)
     {
@@ -309,7 +308,7 @@ gold.maybeCreateGold = function (){
         //randomly decide where on screen it is
         const LeftRight = Math.random() < 0.5 ? -1 : 1;
         const TopBottom = Math.random() < 0.5 ? -1 : 1;
-        const yloc = Math.floor(getRandom(0, 90)) / 100 * TopBottom;
+        const yloc = Math.floor(getRandom(0, 60)) / 100 * TopBottom;
         const xloc = Math.floor(getRandom(0, 90)) / 100 * LeftRight;
 
         //put the coords in v according to its pseudo index
