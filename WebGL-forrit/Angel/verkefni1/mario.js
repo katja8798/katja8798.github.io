@@ -68,9 +68,12 @@ window.onload = function init()
     gl.vertexAttribPointer( locPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( locPosition );
 
+
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
-        if (Mario.UP === false && Mario.DOWN === false) {
+        if (Mario.UP === false &&
+            Mario.DOWN === false &&
+            Mario.GOLD_COUNT < 10) {
             switch (e.keyCode) {
                 case 37:	// vinstri ör
                     xmove = -0.03;
@@ -285,7 +288,10 @@ gold.maybeCreateGold = function (){
     const r = getRandom(0, 1000);
 
     //create gold depending on random factor
-    if (50 > r && this.COUNT < this.MAX) {
+    if (50 > r &&
+        this.COUNT < this.MAX &&
+        Mario.GOLD_COUNT < 10)
+    {
         //update number of "alive" gold
         this.COUNT++;
 
