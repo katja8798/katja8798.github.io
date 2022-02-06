@@ -221,26 +221,29 @@ Mario.JUMP = function (){
             }
         }
     } else {
-        for (let i = 0; i < 3; i++) {
-            v[i][0] += speed * Math.cos(angle);
-            v[i][1] += speed * Math.sin(angle);
-        }
+        let hitWall = 1;
 
-        // check if we're at the end of the screen
+        // check if we're at the end of the screen and turn appropriately
         if (Mario.FACING) {
             if (v[2][0] > 1) {
-                v[2][0] -= 2*speed * Math.cos(angle);
+                hitWall = -1;
                 v[1][0] = v[2][0];
                 Mario.FACING  = !Mario.FACING;
             }
         }else {
-            if (v[0][0] <  -1) {
-                v[0][0] += 2*speed * Math.cos(angle);
+            if (v[0][0] < -1) {
+                hitWall = -1
                 v[1][0] = v[0][0];
                 Mario.FACING  = !Mario.FACING;
             }
         }
 
+        for (let i = 0; i < 3; i++) {
+            v[i][0] += hitWall*speed * Math.cos(angle);
+            v[i][1] += speed * Math.sin(angle);
+        }
+
+        //did we collide while in the air
         if (Mario.colliding()) {
             Mario.GOLD_COUNT++;
             Mario.addScoreMark(Mario.GOLD_COUNT);
