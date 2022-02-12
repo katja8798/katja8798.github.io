@@ -23,8 +23,8 @@ var maxY = 1.0;
 var boxRad = 0.05;
 
 //staerd box
-var sx = 1.0;
-var sy = 1.0;
+var h = 1.0;//haed
+var b = 1.0;//breidd
 
 // Ferningurinn er upphaflega � mi�junni
 var vertices = new Float32Array([-0.05, -0.05, 0.05, -0.05, 0.05, 0.05, -0.05, 0.05]);
@@ -67,13 +67,13 @@ window.onload = function init() {
     window.addEventListener("keydown", function(e){
         switch( e.keyCode ) {
             case 38:	// upp
-                sx += 0.1;
-                sy += 0.1;
+                b += 0.1;
+                h += 0.1;
                 boxRad += 0.005;
                 break;
             case 40:	// nidur
-                sx -= 0.1;
-                sy -= 0.1;
+                b -= 0.1;
+                h -= 0.1;
                 boxRad -= 0.005;
                 break;
             case 37:	// vinstri
@@ -102,7 +102,7 @@ function render() {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     let mv = mat4();
-    mv = mult(mv, scalem(sx,sy,1));
+    mv = mult(mv, scalem(b,h,1));
 
     gl.uniform2fv( locBox, flatten(box) );
 
