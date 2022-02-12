@@ -69,12 +69,12 @@ window.onload = function init() {
             case 38:	// upp
                 sx += 0.1;
                 sy += 0.1;
-                boxRad += 0.1;
+                boxRad += 0.005;
                 break;
             case 40:	// nidur
                 sx -= 0.1;
                 sy -= 0.1;
-                boxRad -= 0.1;
+                boxRad -= 0.005;
                 break;
             case 37:	// vinstri
                 dX += 0.01
@@ -99,16 +99,15 @@ function render() {
     box[0] += dX;
     box[1] += dY;
     
-    gl.clear( gl.COLOR_BUFFER_BIT );
+    gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var mv = mat4();
+    let mv = mat4();
     mv = mult(mv, scalem(sx,sy,1));
 
-    //
     gl.uniform2fv( locBox, flatten(box) );
 
     //Scale
-    gl.uniformMatrix4fv(scaleLoc, false , flatten(box));
+    gl.uniformMatrix4fv(locScale, false , flatten(mv));
 
     gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );
 
