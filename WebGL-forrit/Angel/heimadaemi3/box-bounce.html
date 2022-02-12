@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)https://hjalmtyr.github.io/WebGL-forrit/Angel/box-bounce.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script id="vertex-shader" type="x-shader/x-vertex">
+
+uniform vec2 boxPos;
+attribute vec4 vPosition;
+uniform mat4 scale;
+
+void main()
+{
+    vec4 t = vPosition * scale;
+    
+    t.xy += boxPos;
+    
+    gl_Position = t;
+}
+</script>
+
+<script id="fragment-shader" type="x-shader/x-fragment">
+
+precision mediump float;
+
+varying vec4 fColor;
+void
+main()
+{
+    gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );
+}
+</script>
+
+<script type="text/javascript" src="../../Common/webgl-utils.js"></script>
+<script type="text/javascript" src="../../Common/initShaders.js"></script>
+<script type="text/javascript" src="../../Common/MV.js"></script>
+<script type="text/javascript" src="box-bounce.js"></script>
+
+</head><body>
+<canvas id="gl-canvas" width="512" height="512"></canvas>
+
+
+<div id="extwaiokist" style="display:none" v="nipgg" q="268ca998" c="80.08" i="86" u="21.82" s="01242205" d="1" w="false" e="" m="BMe=" vn="9adfy"><div id="extwaigglbit" style="display:none" v="nipgg" q="268ca998" c="80.08" i="86" u="21.82" s="01242205" d="1" w="false" e="" m="BMe="></div></div></body></html>
