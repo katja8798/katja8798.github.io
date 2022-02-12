@@ -67,14 +67,18 @@ window.onload = function init() {
     window.addEventListener("keydown", function(e){
         switch( e.keyCode ) {
             case 38:	// upp
-                b += 0.1;
-                h += 0.1;
-                boxRad += 0.005;
+                if (boxRad < 1) {
+                    b += 0.1;
+                    h += 0.1;
+                    boxRad += 0.005;
+                }
                 break;
             case 40:	// nidur
-                b -= 0.1;
-                h -= 0.1;
-                boxRad -= 0.005;
+                if (boxRad > 0) {
+                    b -= 0.1;
+                    h -= 0.1;
+                    boxRad -= 0.005;
+                }
                 break;
             case 37:	// vinstri
                 dX += 0.01
