@@ -136,25 +136,25 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var mv = mat4();
+    let mv = mat4();
     mv = mult( mv, rotateX(spinX) );
     mv = mult( mv, rotateY(spinY) ) ;
 
-    // Build the letter H...
-    // First the right leg
-    mv1 = mult( mv, translate( -0.3, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.0, 0.1 ) );
+    //Skjar
+    let mv1 = mult(mv, translate(0.0,0.0,0.0));
+    mv1 = mult(mv1, scalem(0.8,0.5,0.1));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    // Then the left leg
-    mv1 = mult( mv, translate( 0.3, 0.0, 0.0 ) );
-    mv1 = mult( mv1, scalem( 0.1, 1.0, 0.1 ) );
+    //Standur(sula)
+    mv1 = mult(mv, translate(0.0,-0.1,-0.05));
+    mv1 = mult(mv1, scalem(0.2,0.5,0.1));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    // Finally the middle bar (no translation necessary)
-    mv1 = mult( mv, scalem( 0.5, 0.1, 0.1 ) );
+    //Standur(botn)
+    mv1 = mult(mv, translate(0.0,-0.35,0.0));
+    mv1 = mult(mv1, scalem(0.5,0.05,0.3));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
