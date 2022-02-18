@@ -22,6 +22,7 @@ var origY;
 var rotYear = 0.0;
 var rotDay = 0.0;
 var earthTilt = 23.5;
+var speed = 0.0;
 
 var matrixLoc;
 
@@ -85,6 +86,18 @@ window.onload = function init()
         }
     } );
 
+    window.addEventListener("keydown", function(e){
+        if(e.keyCode === 38) { //up arrow
+            speed += 0.1;
+            speed += 0.1;
+
+        }
+        if(e.keyCode === 40) { //down arrow
+            speed -= 0.1;
+            speed -= 0.1;
+        }
+    } );
+
     render();
 }
 
@@ -142,8 +155,8 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    rotDay += 1.0;
-    rotYear += 0.1;        // not the correct value, but looks better!
+    rotDay += 1.0 + speed;
+    rotYear += 0.1 + speed;        // not the correct value, but looks better!
 
     var mv = mat4();
     mv = mult( mv, rotateX(spinX) );
@@ -168,6 +181,13 @@ function render()
     mvt = mult( mvt, translate( 1.8, 0.0, 0.0 ) );
     mvt = mult( mvt, scalem( 0.4, 0.4, 0.4 ) );
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mvt));
+    gl.drawArrays( gl.TRIANGLES, 0, numVertices );
+
+    // teikna "gervihnöttur"
+    var mvg = mult( mvt, rotateX( 30.0*rotYear ) );
+    mvg = mult( mvg, translate( 0.0, 2.0, 0.0 ) );
+    mvg = mult( mvg, scalem( 0.7, 0.7, 0.7 ) );
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mvg));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     requestAnimFrame( render );
