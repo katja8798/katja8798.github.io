@@ -147,7 +147,7 @@ function render()
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     //Standur(sula)
-    mv1 = mult(mv, translate(0.0,-0.1,-0.05));
+    mv1 = mult(mv, translate(0.0,-0.1,0.05));
     mv1 = mult(mv1, scalem(0.2,0.5,0.1));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );

@@ -18,6 +18,10 @@ var spinY = 0;
 var origX;
 var origY;
 
+var rotY = 0;
+var rotX = 0;
+var rev = false;
+
 var matrixLoc;
 
 window.onload = function init()
@@ -136,26 +140,41 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    if (Math.round(rotX) === 35 || Math.round(rotX) === -35) {
+        rev = !rev;
+    }
+
+    if (!rev) {
+        rotX += 0.5;
+    }
+    else {
+        rotX -= 0.5;
+    }
+
+    rotY += 0.5;
+
     let mv = mat4();
     mv = mult( mv, rotateX(spinX) );
     mv = mult( mv, rotateY(spinY) ) ;
 
-    //Skjar
-    let mv1 = mult(mv, translate(0.0,0.0,0.0));
-    mv1 = mult(mv1, scalem(0.8,0.5,0.1));
+    //stallur
+    let mv1 = mult(mv, translate(0.0,-0.30,0.0));
+    mv1 = mult(mv1, scalem(0.4,0.08,0.4));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    //Standur(sula)
-    mv1 = mult(mv, translate(0.0,-0.1,-0.05));
-    mv1 = mult(mv1, scalem(0.2,0.5,0.1));
+    //midsula
+    mv1 = mult(mv, translate(0.0,-0.15,0.0));
+    mv1 = mult(mv1, scalem(0.05,0.3,0.05));
     gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
-    //Standur(botn)
-    mv1 = mult(mv, translate(0.0,-0.35,0.0));
-    mv1 = mult(mv1, scalem(0.5,0.05,0.3));
-    gl.uniformMatrix4fv(matrixLoc, false, flatten(mv1));
+    //vogastong
+    let mvv = mult(mv, rotateY(rotY))
+    mvv = mult(mvv, translate(0.0,0.0,0.0));
+    mvv = mult(mvv, rotateZ(rotX));
+    mvv = mult(mvv, scalem(1.0,0.04,0.1));
+    gl.uniformMatrix4fv(matrixLoc, false, flatten(mvv));
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     requestAnimFrame( render );
