@@ -16,6 +16,7 @@ function createWolf(positions) {
             z: positions.z,
         },
         COLOR: vec4(1.0, 0.0, 0.0, 1.0),//red
+        MAX: 10
     };
 }
 
