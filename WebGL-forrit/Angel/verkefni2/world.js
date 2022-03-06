@@ -105,6 +105,7 @@ function changeHungerTime(val) {
     }
 }
 
+// Simulation slider
 function changeSimulationSpeed(val) {
     let s;
     document.querySelector('#speed').value = val;
