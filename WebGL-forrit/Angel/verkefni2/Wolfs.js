@@ -24,7 +24,7 @@ function wolfBehaviour() {
         wolf[i].pos = moveToAnotherSpot(wolf[i], i);
 
         // baby time?
-        if (wolf[i].timeToGiveBirth === 0) {
+        if (wolf[i].timeToGiveBirth === 0 && wolf.length < wolf[i].MAX) {
             //check if space available to give birth
             let babyPos = getRandomNeighbouringSpot(wolf[i], wolf);
             if ( babyPos!== wolf[i].pos) {

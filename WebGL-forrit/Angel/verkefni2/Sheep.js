@@ -12,6 +12,7 @@ function createSheep(positions) {
             z: positions.z,
         },
         COLOR: vec4(0.0, 1.0, 0.0, 1.0),//green
+        MAX: 30
     };
 }
 
@@ -29,7 +30,7 @@ function sheepBehaviour() {
         }
 
         //check if baby time
-        if (sheep[i].timeToGiveBirth <= 0) {
+        if (sheep[i].timeToGiveBirth <= 0 && sheep.length < sheep[i].MAX) {
             //check if space available to give birth, if not postpone birthing
             let babyPos = getRandomNeighbouringSpot(sheep[i], sheep);
             if (babyPos!== sheep[i].pos) {
