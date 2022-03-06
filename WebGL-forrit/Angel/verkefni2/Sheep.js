@@ -29,7 +29,7 @@ function sheepBehaviour() {
         }
 
         //check if baby time
-        if (sheep[i].timeForBaby <= 0) {
+        if (sheep[i].timeToGiveBirth <= 0) {
             //check if space available to give birth, if not postpone birthing
             let babyPos = getRandomNeighbouringSpot(sheep[i], sheep);
             if (babyPos!== sheep[i].pos) {

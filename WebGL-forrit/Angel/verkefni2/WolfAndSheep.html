@@ -45,45 +45,46 @@ main()
         <div id = "sheep">
             Starter Sheep Settings:
             <div>
+                Number of Sheep: <output id="numOfSheep">1</output></br>
                 1 <input type="range" value="1" id="sliderSheep" min="1" max="30" step="1"
                          onChange="changeSheepCount(value)"/> 30
-                Number of Sheep: <output id="numOfSheep">1</output>
+
             </div>
 
             <div>
+                Time past until a sheep births a sheep: <output id="sheepBirthrate">3</output></br>
                 1 <input type="range" value="3" min="1" max="10" step="1"
-                            onChange="changeSheepBirthRate(value)"/> 10
-                Time past until a sheep births a sheep: <output id="sheepBirthrate">3</output>
+                onChange="changeSheepBirthrate(value)"/> 10
             </div>
         </div>
 
         <div id = "wolf">
             Starter Wolf Settings:
             <div>
+                Number of Wolves: <output id="numOfWolves">1</output></br>
                 1 <input type="range" value="1" id="sliderWolf" min="1" max="10" step="1"
-                        onChange="changeWolfCount(value)"/> 10
-                Number of Wolves: <output id="numOfWolves">1</output>
+                onChange="changeWolfCount(value)"/> 10
             </div>
 
             <div>
+                Number of sheep needed to birth wolf: <output id="wolfBirthrate">1</output></br>
                 1 <input type="range" value="1" id="wolfBirth" min="1" max="20" step="1"
-                            onChange="changeWolfBirthRate(value)"/> 20
-                Number of sheep needed to birth wolf: <output id="wolfBirthrate">1</output>
+                onChange="changeWolfBirthrate(value)"/> 20
             </div>
 
             <div>
+                Time past until wolf perishes of hunger: <output id="hungerTime">50</output></br>
                 10 <input type="range" id="hungerTime"  value="50" min="10" max="250" step="10"
-                            onChange="changeHungerTime(value)"/> 250
-                Time past until wolf perishes of hunger: <output id="hungerTime">50</output>
+                onChange="changeHungerTime(value)"/> 250
             </div>
         </div>
 
         <div id = "simulation">
             Starter Simulation Setting:
             <div>
+                Simulation speed: <output id="speed">1</output></br>
                 0 <input type="range" id="simulationSpeed" value="1" min="0" max="5" step="1"
-                            onChange="changeSimulationSpeed"/> 5
-                Simulation speed: <output id="simulationSpeed">1</output>
+                onChange="changeSimulationSpeed"/> 5
             </div>
         </div>
 

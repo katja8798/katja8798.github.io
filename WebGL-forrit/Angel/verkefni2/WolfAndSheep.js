@@ -43,10 +43,10 @@ const wolf = [];
 // Slider info
 let sheepCount;
 let wolfCount;
-let sheepBirthrate = 4;
+let sheepBirthrate = 3;
 let wolfBirthrate = 1;
-let hungerTime = 100;
-let simulationSpeed = 100;
+let hungerTime = 50;
+let simulationSpeed = 150;
 let time = 0;
 
 window.onload = function init() {

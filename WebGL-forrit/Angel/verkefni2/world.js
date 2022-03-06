@@ -57,16 +57,16 @@ function changeSheepCount(val) {
     }
 }
 
-function changeSheepBirthRate(val) {
-    sheepBirthRate = val;
-    document.querySelector('#sheepBirthrate').value = sheepBirthRate;
+function changeSheepBirthrate(val) {
+    sheepBirthrate = val;
+    document.querySelector('#sheepBirthrate').value = sheepBirthrate;
 
     //change for every sheep
     for(let i = 0; i < sheep.length; i++) {
-        sheep[i].timeForBaby = sheepBirthRate;
+        sheep[i].timeToGiveBirth = sheepBirthrate;
     }
 }
-/*
+
 // Wolf sliders
 function changeWolfCount(val) {
     wolfCount = val;
@@ -83,53 +83,52 @@ function changeWolfCount(val) {
     if (wolf.length > wolfCount) {
         wolf.splice(wolfCount, wolf.length);
     }
-}*/
-/*
-function changeWolfBirthRate(val) {
-    wolfBirthRate = val;
-    document.querySelector('#wolfBirthrate').value = wolfBirthRate;
+}
+
+function changeWolfBirthrate(val) {
+    wolfBirthrate = val;
+    document.querySelector('#wolfBirthrate').value = wolfBirthrate;
 
     //change for every sheep
     for(let i = 0; i < wolf.length; i++) {
-        wolf[i].timeForBaby = wolfBirthRate;
+        wolf[i].timeToGiveBirth = wolfBirthrate;
     }
-}*/
+}
 
-/*function changeHungerTime(val) {
-    starvationTime = val;
-    document.querySelector('#hungerTime').value = starvationTime;
+function changeHungerTime(val) {
+    hungerTime= val;
+    document.querySelector('#hungerTime').value = hungerTime;
 
     //change for every wolf
     for(let i = 0; i < wolf.length; i++) {
-        wolf[i].lifetime = starvationTime;
+        wolf[i].lifetime = hungerTime;
     }
-}*/
-/*
+}
+
 function changeSimulationSpeed(val) {
-    simulationSpeed = val;
-    document.querySelector('#simulationSpeed')
+    let s;
+    document.querySelector('#speed').value = val;
 
     //change simulation speed in world
-    let num = simulationSpeed;
-    switch (num) {
+    switch (val) {
         case 0:
-            simulationSpeed = -Infinity;
+            s = -Infinity;
             break;
         case 1:
-            simulationSpeed = 150;
+            s = 150;
             break;
         case 2:
-            simulationSpeed = 50;
+            s = 50;
             break;
         case 3:
-            simulationSpeed = 35;
+            s = 35;
             break;
         case 4:
-            simulationSpeed = 15;
+            s = 15;
             break;
         case 5:
-            simulationSpeed = 5;
+            s = 5;
             break;
-
-    };
-}*/
+    }
+    simulationSpeed = s;
+}
