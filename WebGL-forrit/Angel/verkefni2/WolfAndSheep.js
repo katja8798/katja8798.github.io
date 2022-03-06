@@ -138,13 +138,8 @@ window.onload = function init() {
         }
     });
 
-    //sliders(simSpeed);
-
     render();
 }
-
-let count = 0;
-
 
 function render() {
     time += 1;
@@ -169,12 +164,12 @@ function render() {
         drawAnimal(mv, sheep[i]);
     }
 
-    //Draw wolfs
+    //Draw wolves
     for (let i = 0; i < wolf.length; i++) {
         drawAnimal(mv, wolf[i]);
     }
 
-    // Let animals live according to behaviours
+    //Make animals live according to behaviours
     if(time % simulationSpeed === 0) {
         sheepBehaviour();
         wolfBehaviour();
