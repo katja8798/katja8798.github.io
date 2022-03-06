@@ -5,12 +5,12 @@ function wrap(pos) {
 }
 
 // Check if there is another animal in the spot
-function spotIsEmpty(pos, array) {
+function spotIsEmptyOf(spot, array) {
     for (let i = 0; i < array.length; i++) {
-        if (pos.x.toFixed(2) === array[i].pos.x.toFixed(2) &&
-            pos.y.toFixed(2) === array[i].pos.y.toFixed(2) &&
-            pos.z.toFixed(2) === array[i].pos.z.toFixed(2) &&
-            array[i] !== pos) {
+        if (spot.x.toFixed(2) === array[i].pos.x.toFixed(2) &&
+            spot.y.toFixed(2) === array[i].pos.y.toFixed(2) &&
+            spot.z.toFixed(2) === array[i].pos.z.toFixed(2) &&
+            array[i] !== spot) {
             return false
         }
     }
@@ -19,6 +19,11 @@ function spotIsEmpty(pos, array) {
 
 function generateRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function roundTo2Decimals(num) {
+    const x = Math.pow(10,2);
+    return Math.round(num * x) / x;
 }
 
 function generateSpotsInAllDirections(animal) {
@@ -45,7 +50,7 @@ function getRandomSpot() {
 }
 
 //returns original spot if no space around
-function getRandomNeighbouringSpot(animal) {
+function getRandomNeighbouringSpot(animal, array) {
     //Assume all spots around are available
 
     // All "available" spots
@@ -78,43 +83,37 @@ function getRandomNeighbouringSpot(animal) {
         //check if spot is available
         switch (num) {
             case 1:
-                if (spotIsEmpty(newSpots.spot1, sheep) &&
-                    spotIsEmpty(newSpots.spot1, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot1, array)) {
                     spot = newSpots.spot1;
                     emptySpotFound = true;
                 }
                 break;
             case 2:
-                if (spotIsEmpty(newSpots.spot2, sheep) &&
-                    spotIsEmpty(newSpots.spot2, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot2, array)) {
                     spot = newSpots.spot2;
                     emptySpotFound = true;
                 }
                 break;
             case 3:
-                if (spotIsEmpty(newSpots.spot3, sheep) &&
-                    spotIsEmpty(newSpots.spot3, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot3, array)) {
                     spot = newSpots.spot3;
                     emptySpotFound = true;
                 }
                 break;
             case 4:
-                if (spotIsEmpty(newSpots.spot4, sheep) &&
-                    spotIsEmpty(newSpots.spot4, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot4, array)) {
                     spot = newSpots.spot4;
                     emptySpotFound = true;
                 }
                 break;
             case 5:
-                if (spotIsEmpty(newSpots.spot5, sheep) &&
-                    spotIsEmpty(newSpots.spot5, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot5, array)) {
                     spot = newSpots.spot5;
                     emptySpotFound = true;
                 }
                 break;
             case 6:
-                if (spotIsEmpty(newSpots.spot6, sheep) &&
-                    spotIsEmpty(newSpots.spot6, wolf)) {
+                if (spotIsEmptyOf(newSpots.spot6, array)) {
                     spot = newSpots.spot6;
                     emptySpotFound = true;
                 }break;

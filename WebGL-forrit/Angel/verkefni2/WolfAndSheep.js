@@ -44,9 +44,9 @@ const wolf = [];
 let noOfSheep;
 let noOfWolves;
 let sheepBirth = 4;
-let wolfBirth = 2;
-let starvationTime = 10;
-let simSpeed = 200;
+let wolfBirth = 1;
+let starvationTime = 100;
+let simSpeed = 100;
 let time = 0;
 
 window.onload = function init() {
@@ -61,12 +61,10 @@ window.onload = function init() {
     colorAnimals();
 
     sheep.push(createSheep(getRandomSpot()));
-    //wolf.push(createWolf(getRandomSpot()));
+    wolf.push(createWolf(getRandomSpot()));
 
     vertices.push(...lines);
     vertices.push(...animal);
-    console.log(vertices);
-
 
     numSheep = sheep.length;
     numWolves = wolf.length;
@@ -145,6 +143,9 @@ window.onload = function init() {
     render();
 }
 
+let count = 0;
+
+
 function render() {
     time += 1;
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -169,14 +170,32 @@ function render() {
     }
 
     //Draw wolfs
-    /*for (let i = 0; i < wolf.length; i++) {
+    for (let i = 0; i < wolf.length; i++) {
         drawAnimal(mv, wolf[i]);
-    }*/
+    }
 
     // Let animals ROAM mwuhahaha
     if(time % simSpeed === 0) {
         sheepBehaviour();
-        //movementWolf();
+        movementWolf();
+        /*if ( sheep.length > 0) {
+            console.log(count)
+            for (let i = 0; i < sheep.length; i++) {
+                console.log("sheep")
+                console.log("Xsheep: " + sheep[i].pos.x)
+                console.log("YSheep: " + sheep[i].pos.y)
+                console.log("ZSheep: " + sheep[i].pos.z)
+                console.log("wolf")
+                console.log("Xwolf: " + wolf[i].pos.x)
+                console.log("Ywolf: " + wolf[i].pos.y)
+                console.log("Zwolf: " + wolf[i].pos.z)
+                console.log("dist")
+                console.log("Xdist: " + +(wolf[i].pos.x - sheep[i].pos.x).toFixed(2))
+                console.log("Ydist: " + +(wolf[i].pos.y - sheep[i].pos.y).toFixed(2))
+                console.log("Zdist: " + +(wolf[i].pos.z - sheep[i].pos.z).toFixed(2))
+                count++;
+            }
+        }*/
     }
 
     requestAnimFrame(render);
