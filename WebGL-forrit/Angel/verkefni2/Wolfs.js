@@ -9,7 +9,7 @@ After a wolf has eaten an X amount of sheep then the wolf will give birth
 function createWolf(positions) {
     return {
         lifetime: starvationTime,
-        timeForBaby: wolfBirth,
+        timeForBaby: wolfBirthRate,
         pos: {
             x: positions.x,
             y: positions.y,
@@ -19,7 +19,7 @@ function createWolf(positions) {
     };
 }
 
-function movementWolf() {
+function wolfBehaviour() {
     for (let i = 0; i < wolf.length; i++) {
         wolf[i].pos = moveToAnotherSpot(wolf[i], i);
 
@@ -29,7 +29,7 @@ function movementWolf() {
             let babyPos = getRandomNeighbouringSpot(wolf[i], wolf);
             if ( babyPos!== wolf[i].pos) {
                 wolf.push(createWolf(babyPos));//give birth
-                wolf[i].timeForBaby = wolfBirth;//Reset time
+                wolf[i].timeForBaby = wolfBirthRate;//Reset time
             }
         }
 

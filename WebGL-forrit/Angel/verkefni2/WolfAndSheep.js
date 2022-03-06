@@ -41,12 +41,12 @@ let numWolves;
 const wolf = [];
 
 // Slider info
-let noOfSheep;
-let noOfWolves;
-let sheepBirth = 4;
-let wolfBirth = 1;
+let sheepCount;
+let wolfCount;
+let sheepBirthRate = 4;
+let wolfBirthRate = 1;
 let starvationTime = 100;
-let simSpeed = 100;
+let simulationSpeed = 100;
 let time = 0;
 
 window.onload = function init() {
@@ -66,8 +66,8 @@ window.onload = function init() {
     vertices.push(...lines);
     vertices.push(...animal);
 
-    numSheep = sheep.length;
-    numWolves = wolf.length;
+    sheepCount = sheep.length;
+    wolfCount = wolf.length;
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -174,10 +174,10 @@ function render() {
         drawAnimal(mv, wolf[i]);
     }
 
-    // Let animals ROAM mwuhahaha
+    // Let animals live according to behaviours
     if(time % simSpeed === 0) {
         sheepBehaviour();
-        movementWolf();
+        wolfBehaviour();
         /*if ( sheep.length > 0) {
             console.log(count)
             for (let i = 0; i < sheep.length; i++) {

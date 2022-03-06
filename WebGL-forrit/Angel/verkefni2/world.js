@@ -38,77 +38,98 @@ function grid(num) {
 
     return { xCol, yCol, zCol }
 }
-/*
 
-function sliders(simSpeed) {
-    // Fjöldi kinda
-    document.getElementById("noSheeps").onchange = function (event) {
-        noOfSheep = event.target.value;
-        document.getElementById("noOfSheep").innerHTML = "Þú hefur valið " + noOfSheep + " kindur";
+// Sheep sliders
+function changeSheepCount(val) {
+    sheepCount = val;
+    document.querySelector('#numOfSheep').value = sheepCount;
 
-        for (let i = 0; i < noOfSheep - 1; i++) {
-            if (sheep.length < noOfSheep) sheep.push(createSheep(getRandomNeighbouringSpot(sheep)));
+    //add sheep to match slider change
+    if (sheep.length < sheepCount) {
+        for (let i = 0; i < (sheepCount); i++) {
+            sheep.push(createSheep(getRandomSpot()));
         }
+    }
 
-        if (sheep.length > noOfSheep) {
-            sheep.splice(noOfSheep, sheep.length);
+    //delete sheep to match slider change
+    if (sheep.length > sheepCount) {
+        sheep.splice(sheepCount, sheep.length);
+    }
+}
+
+function changeSheepBirthRate(val) {
+    sheepBirthRate = val;
+    document.querySelector('#sheepBirthrate').value = sheepBirthRate;
+
+    //change for every sheep
+    for(let i = 0; i < sheep.length; i++) {
+        sheep[i].timeForBaby = sheepBirthRate;
+    }
+}
+
+// Wolf sliders
+function changeWolfCount(val) {
+    wolfCount = val;
+    document.querySelector('#numOfWolves').value = wolfCount;
+
+    //add sheep to match slider change
+    if (wolf.length < wolfCount) {
+        for (let i = 0; i < (wolfCount); i++) {
+            wolf.push(createWolf(getRandomSpot()));
         }
+    }
+
+    //delete sheep to match slider change
+    if (wolf.length > wolfCount) {
+        wolf.splice(wolfCount, wolf.length);
+    }
+}
+
+function changeWolfBirthRate(val) {
+    wolfBirthRate = val;
+    document.querySelector('#wolfBirthrate').value = wolfBirthRate;
+
+    //change for every sheep
+    for(let i = 0; i < wolf.length; i++) {
+        wolf[i].timeForBaby = wolfBirthRate;
+    }
+}
+
+function changeHungerTime(val) {
+    starvationTime = val;
+    document.querySelector('#hungerTime').value = starvationTime;
+
+    //change for every wolf
+    for(let i = 0; i < wolf.length; i++) {
+        wolf[i].lifetime = starvationTime;
+    }
+}
+
+function changeSimulationSpeed(val) {
+    simulationSpeed = val;
+    document.querySelector('#simulationSpeed')
+
+    //change simulation speed in world
+    let num = simulationSpeed;
+    switch (num) {
+        case 0:
+            simulationSpeed = -Infinity;
+            break;
+        case 1:
+            simulationSpeed = 150;
+            break;
+        case 2:
+            simulationSpeed = 50;
+            break;
+        case 3:
+            simulationSpeed = 35;
+            break;
+        case 4:
+            simulationSpeed = 15;
+            break;
+        case 5:
+            simulationSpeed = 5;
+            break;
+
     };
-
-    // Fjöldi úlfa
-    document.getElementById("noWolves").onchange = function (event) {
-        noOfWolves = event.target.value;
-        document.getElementById("noOfWolves").innerHTML = "Þú hefur valið " + noOfWolves + " úlfa";
-
-        for (let i = 0; i < noOfWolves - 1; i++) {
-            if (wolf.length < noOfWolves) wolf.push(createWolf(getRandomPos(sheep)));
-        }
-        if(wolf.length===0)wolf.push(createWolf(getRandomPos(sheep)));
-
-        if (wolf.length > noOfWolves) {
-            wolf.splice(noOfWolves, wolf.length);
-        }
-    };
-
-    // Tímalengd á milli fæðinga lamba
-    document.getElementById("sheepBirth").onchange = function (event) {
-        sheepBirth = event.target.value;
-    };
-
-    // Fjöldi étinna lamba þar til yrðlingar fæðast
-    document.getElementById("wolfBirth").onchange = function (event) {
-        wolfBirth = event.target.value;
-        for(let i=0; i< wolf.length; i++)wolf[i].timeForBaby =wolfBirth;
-    };
-    // Tími þar til úlfar svelta
-    document.getElementById("starvationTime").onchange = function (event) {
-        starvationTime = event.target.value;
-        for(let i=0; i< wolf.length; i++)wolf[i].lifetime =starvationTime;
-    };
-
-    // Hraði hermunar
-    document.getElementById("simulationSpeed").onchange = function (event) {
-        let s = event.target.value;
-        switch (s) {
-            case '0':
-                simSpeed = -Infinity;
-                break;
-            case '1':
-                simSpeed = 150;
-                break;
-            case '2':
-                simSpeed = 50;
-                break;
-            case '3':
-                simSpeed = 35;
-                break;
-            case '4':
-                simSpeed = 15;
-                break;
-            case '5':
-                simSpeed = 5;
-                break;
-        }
-    };
-
-}*/
+}

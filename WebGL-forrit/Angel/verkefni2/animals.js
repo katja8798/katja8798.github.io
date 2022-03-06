@@ -21,11 +21,6 @@ function generateRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function roundTo2Decimals(num) {
-    const x = Math.pow(10,2);
-    return Math.round(num * x) / x;
-}
-
 function generateSpotsInAllDirections(animal) {
     return {
         spot1 : { x: wrap(animal.pos.x+gridSpacing), y: animal.pos.y, z: animal.pos.z },
@@ -38,15 +33,26 @@ function generateSpotsInAllDirections(animal) {
 }
 
 function getRandomSpot() {
-    let x = worldGrid.xCol[generateRandomNumber(0, gridNum-1)];
-    let y = worldGrid.yCol[generateRandomNumber(0, gridNum-1)];
-    let z = worldGrid.zCol[generateRandomNumber(0, gridNum-1)];
+    //generate random spot
+    let randSpot = {
+        x: worldGrid.xCol[generateRandomNumber(0, gridNum-1)],
+        y: worldGrid.yCol[generateRandomNumber(0, gridNum-1)],
+        z: worldGrid.zCol[generateRandomNumber(0, gridNum-1)]
+    };
 
-    // Undefined prevention
-    if (!x) x = -0.63;
-    if (!y) y = -0.63;
-    if (!z) z = -0.63;
-    return { x, y, z }
+    // check if it is empty, if not get new co-ords and check again
+    let isEmpty = spotIsEmptyOf(randSpot, wolf) && spotIsEmptyOf(randSpot, sheep);
+    while (!isEmpty) {
+        randSpot = {
+            x: worldGrid.xCol[generateRandomNumber(0, gridNum-1)],
+            y: worldGrid.yCol[generateRandomNumber(0, gridNum-1)],
+            z: worldGrid.zCol[generateRandomNumber(0, gridNum-1)]
+        };
+        //check status again
+        isEmpty = spotIsEmptyOf(randSpot, wolf) && spotIsEmptyOf(randSpot, sheep)
+    }
+
+    return randSpot;
 }
 
 //returns original spot if no space around
