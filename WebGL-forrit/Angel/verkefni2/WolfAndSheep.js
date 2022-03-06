@@ -43,9 +43,9 @@ const wolf = [];
 // Slider info
 let sheepCount;
 let wolfCount;
-let sheepBirthRate = 4;
-let wolfBirthRate = 1;
-let starvationTime = 100;
+let sheepBirthrate = 4;
+let wolfBirthrate = 1;
+let hungerTime = 100;
 let simulationSpeed = 100;
 let time = 0;
 
@@ -175,27 +175,9 @@ function render() {
     }
 
     // Let animals live according to behaviours
-    if(time % simSpeed === 0) {
+    if(time % simulationSpeed === 0) {
         sheepBehaviour();
         wolfBehaviour();
-        /*if ( sheep.length > 0) {
-            console.log(count)
-            for (let i = 0; i < sheep.length; i++) {
-                console.log("sheep")
-                console.log("Xsheep: " + sheep[i].pos.x)
-                console.log("YSheep: " + sheep[i].pos.y)
-                console.log("ZSheep: " + sheep[i].pos.z)
-                console.log("wolf")
-                console.log("Xwolf: " + wolf[i].pos.x)
-                console.log("Ywolf: " + wolf[i].pos.y)
-                console.log("Zwolf: " + wolf[i].pos.z)
-                console.log("dist")
-                console.log("Xdist: " + +(wolf[i].pos.x - sheep[i].pos.x).toFixed(2))
-                console.log("Ydist: " + +(wolf[i].pos.y - sheep[i].pos.y).toFixed(2))
-                console.log("Zdist: " + +(wolf[i].pos.z - sheep[i].pos.z).toFixed(2))
-                count++;
-            }
-        }*/
     }
 
     requestAnimFrame(render);

@@ -8,8 +8,8 @@ After a wolf has eaten an X amount of sheep then the wolf will give birth
 
 function createWolf(positions) {
     return {
-        lifetime: starvationTime,
-        timeForBaby: wolfBirthRate,
+        lifetime: hungerTime,
+        timeToGiveBirth: wolfBirthrate,
         pos: {
             x: positions.x,
             y: positions.y,
@@ -24,12 +24,12 @@ function wolfBehaviour() {
         wolf[i].pos = moveToAnotherSpot(wolf[i], i);
 
         // baby time?
-        if (wolf[i].timeForBaby === 0) {
+        if (wolf[i].timeToGiveBirth === 0) {
             //check if space available to give birth
             let babyPos = getRandomNeighbouringSpot(wolf[i], wolf);
             if ( babyPos!== wolf[i].pos) {
                 wolf.push(createWolf(babyPos));//give birth
-                wolf[i].timeForBaby = wolfBirthRate;//Reset time
+                wolf[i].timeToGiveBirth = wolfBirthrate;//Reset time
             }
         }
 
@@ -101,8 +101,8 @@ function moveToAnotherSpot(w, i) {
         //eat sheep if nextPos is on "top" of them
         if (smallestDistance <= gridSpacing) {//sheep is a neighbour, so nextPos would be on "top" of sheep
             sheep.splice(closestIndex, 1);
-            w.timeForBaby -= 1;
-            w.lifetime = starvationTime;//restart hunger
+            w.timeToGiveBirth -= 1;
+            w.lifetime = hungerTime;//restart hunger
         }
         return nextPos;
     } else {

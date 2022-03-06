@@ -66,7 +66,7 @@ function changeSheepBirthRate(val) {
         sheep[i].timeForBaby = sheepBirthRate;
     }
 }
-
+/*
 // Wolf sliders
 function changeWolfCount(val) {
     wolfCount = val;
@@ -83,8 +83,8 @@ function changeWolfCount(val) {
     if (wolf.length > wolfCount) {
         wolf.splice(wolfCount, wolf.length);
     }
-}
-
+}*/
+/*
 function changeWolfBirthRate(val) {
     wolfBirthRate = val;
     document.querySelector('#wolfBirthrate').value = wolfBirthRate;
@@ -93,9 +93,9 @@ function changeWolfBirthRate(val) {
     for(let i = 0; i < wolf.length; i++) {
         wolf[i].timeForBaby = wolfBirthRate;
     }
-}
+}*/
 
-function changeHungerTime(val) {
+/*function changeHungerTime(val) {
     starvationTime = val;
     document.querySelector('#hungerTime').value = starvationTime;
 
@@ -103,8 +103,8 @@ function changeHungerTime(val) {
     for(let i = 0; i < wolf.length; i++) {
         wolf[i].lifetime = starvationTime;
     }
-}
-
+}*/
+/*
 function changeSimulationSpeed(val) {
     simulationSpeed = val;
     document.querySelector('#simulationSpeed')
@@ -132,4 +132,4 @@ function changeSimulationSpeed(val) {
             break;
 
     };
-}
+}*/

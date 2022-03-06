@@ -5,19 +5,19 @@ Sheep back away from wolf if they find themselves beside them in any direction
  */
 function createSheep(positions) {
     return {
-        COLOR: vec4(0.0, 1.0, 0.0, 1.0),//green
-        timeForBaby: sheepBirthRate,
+        timeToGiveBirth: sheepBirthrate,
         pos: {
             x: positions.x,
             y: positions.y,
             z: positions.z,
         },
+        COLOR: vec4(0.0, 1.0, 0.0, 1.0),//green
     };
 }
 
 function sheepBehaviour() {
     for (let i = 0; i < sheep.length; i++) {
-        sheep[i].timeForBaby -= 1;
+        sheep[i].timeToGiveBirth -= 1;
 
         //walk away if beside wolf - else walk in a random direction
         let wolfDir =  besideWolf(sheep[i])
@@ -34,7 +34,7 @@ function sheepBehaviour() {
             let babyPos = getRandomNeighbouringSpot(sheep[i], sheep);
             if (babyPos!== sheep[i].pos) {
                 sheep.push(createSheep(babyPos));//give birth
-                sheep[i].timeForBaby = sheepBirthRate;//Reset time
+                sheep[i].timeToGiveBirth = sheepBirthrate;//Reset time
             }
         }
     }
