@@ -93,28 +93,10 @@ function changeHungerTime(val) {
 // Simulation slider
 function changeSimulationSpeed(val) {
     //change simulation speed in world
-    let s;
-    switch (val) {
-        case 0:
-            s = -Infinity;
-            break;
-        case 1:
-            s = 150;
-            break;
-        case 2:
-            s = 50;
-            break;
-        case 3:
-            s = 35;
-            break;
-        case 4:
-            s = 15;
-            break;
-        case 5:
-            s = 5;
-            break;
+    if (val === 170) {
+        val = -Infinity
     }
-    simulationSpeed = s;
+    simulationSpeed = val;
 
-    document.querySelector('#simulationSpeed').value = val;
+    document.querySelector('#simulationSpeed').value = simulationSpeed;
 }

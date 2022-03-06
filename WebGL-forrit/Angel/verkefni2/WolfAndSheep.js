@@ -44,7 +44,7 @@ let wolfCount;
 let sheepBirthrate = 3;
 let wolfBirthrate = 1;
 let hungerTime = 50;
-let simulationSpeed = 150;
+let simulationSpeed = 155;
 let time = 0;
 
 window.onload = function init() {
