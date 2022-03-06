@@ -46,7 +46,7 @@ function changeSheepCount(val) {
 
     //add sheep to match slider change
     if (sheep.length < sheepCount) {
-        for (let i = 0; i < (sheepCount); i++) {
+        for (let i = 0; i < sheepCount; i++) {
             sheep.push(createSheep(getRandomSpot()));
         }
     }
@@ -60,11 +60,6 @@ function changeSheepCount(val) {
 function changeSheepBirthrate(val) {
     sheepBirthrate = val;
     document.querySelector('#sheepBirthrate').value = sheepBirthrate;
-
-    //change for every sheep
-    for(let i = 0; i < sheep.length; i++) {
-        sheep[i].timeToGiveBirth = sheepBirthrate;
-    }
 }
 
 // Wolf sliders
@@ -88,21 +83,11 @@ function changeWolfCount(val) {
 function changeWolfBirthrate(val) {
     wolfBirthrate = val;
     document.querySelector('#wolfBirthrate').value = wolfBirthrate;
-
-    //change for every sheep
-    for(let i = 0; i < wolf.length; i++) {
-        wolf[i].timeToGiveBirth = wolfBirthrate;
-    }
 }
 
 function changeHungerTime(val) {
     hungerTime= val;
     document.querySelector('#hungerTime').value = hungerTime;
-
-    //change for every wolf
-    for(let i = 0; i < wolf.length; i++) {
-        wolf[i].lifetime = hungerTime;
-    }
 }
 
 // Simulation slider
