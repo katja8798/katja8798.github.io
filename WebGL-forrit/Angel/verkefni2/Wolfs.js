@@ -22,7 +22,7 @@ function createWolf(positions) {
 
 function wolfBehaviour() {
     for (let i = 0; i < wolf.length; i++) {
-        wolf[i].pos = moveToAnotherSpot(wolf[i], i);
+        wolf[i].pos = moveToAnotherSpot(wolf[i]);
 
         // baby time?
         if (wolf[i].timeToGiveBirth === 0 && wolf.length < wolf[i].MAX) {
@@ -41,7 +41,7 @@ function wolfBehaviour() {
     }
 }
 
-function moveToAnotherSpot(w, i) {
+function moveToAnotherSpot(w) {
     // if there are no sheep move randomly
     if (sheep.length === 0) {
         return getRandomNeighbouringSpot(w, wolf);

@@ -9,7 +9,6 @@ var gl;
 var NumVertices = 36;
 
 var points = [];
-var colors = [];
 
 var vBuffer;
 var vPosition;
@@ -23,8 +22,9 @@ var lines = [];
 var zDist = -3.0;
 var eyesep = 0.2;
 
-var proLoc;
-var mvLoc;
+let proLoc;
+let mvLoc;
+let colorLoc;
 let vertices = [];
 
 //World grid
@@ -35,9 +35,7 @@ let worldGrid;
 
 //animals
 const animal = [];
-let numSheep;
 const sheep = [];
-let numWolves;
 const wolf = [];
 
 // Slider info
