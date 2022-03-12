@@ -43,6 +43,18 @@ var cubeBuffer;
 var trackBuffer;
 var vPosition;
 
+let spinX = 200;
+let spinY = 0;
+let movement = false;
+let origX;
+let origY;
+let dirX = spinX;
+let dirY = spinY;
+var angle = 270.0;
+let posX = 0;
+let posY = 20;
+var userIncr = 0.5;
+
 // the 36 vertices of the cube
 var cVertices = [
     // front side:
@@ -67,6 +79,16 @@ var cVertices = [
 
 // vertices of the track
 var tVertices = [];
+
+// vertices for the roof
+var rVertices = [
+    // one side
+    vec3(0.5, -0.5, 0.5), vec3(0.5, 0.5, 0.5), vec3(0.0, 0.5, 1.0),
+    vec3(0.0, 0.5, 1.0), vec3(0.0, -0.5, 1.0), vec3(0.5, -0.5, 0.5),
+    // one side
+    vec3(-0.5, 0.5, 0.5), vec3(-0.5, -0.5, 0.5), vec3(0.0, -0.5, 1.0),
+    vec3(0.0, -0.5, 1.0), vec3(0.0, 0.5, 1.0), vec3(-0.5, 0.5, 0.5)
+];
 
 
 window.onload = function init()
@@ -99,6 +121,10 @@ window.onload = function init()
     gl.bindBuffer( gl.ARRAY_BUFFER, cubeBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(cVertices), gl.STATIC_DRAW );
 
+    // VBO for roof of the house in co-ord (-40,140)
+    roofBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, roofBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, flatten(rVertices), gl.STATIC_DRAW);
 
     vPosition = gl.getAttribLocation( program, "vPosition" );
     gl.vertexAttribPointer( vPosition, 3, gl.FLOAT, false, 0, 0 );
@@ -116,9 +142,33 @@ window.onload = function init()
     document.getElementById("Viewpoint").innerHTML = "1: Fjarlægt sjónarhorn";
     document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
 
+    // Event listeners for mouse
+    canvas.addEventListener("mousedown", function (e) {
+        movement = true;
+        origX = e.offsetX;
+    });
+
+    canvas.addEventListener("mousemove", function (e) {
+        if (movement) {
+            angle += 0.4 * (origX - e.clientX);
+            angle %= 360.0;
+            dirX = Math.cos(radians(angle));
+            dirY = Math.sin(radians(angle));
+            origX = e.clientX;
+        }
+    });
+
+    canvas.addEventListener("mouseup", function (e) {
+        movement = false;
+    });
+
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
         switch( e.keyCode ) {
+            case 48: // a) Augað er ofan á húsinu
+                view = 0;
+                document.getElementById("Viewpoint").innerHTML = "0: Horfa á bílinn frá húsinu í (-40, 140)";
+                break;
             case 49:	// 1: distant and stationary viewpoint
                 view = 1;
                 document.getElementById("Viewpoint").innerHTML = "1: Fjarlægt sjónarhorn";
@@ -151,7 +201,11 @@ window.onload = function init()
                 view = 8;
                 document.getElementById("Viewpoint").innerHTML = "8: Til hliðar við bílinn";
                 break;
-            
+            case 57: //b) Augað í fastri hæð"
+                view = 9;
+                height = 0.0;
+                document.getElementById("Viewpoint").innerHTML = "9: Augað er í fastri hæð";
+                break;
             case 38:    // up arrow
                 height += 2.0;
                 document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
@@ -260,6 +314,16 @@ function render()
 
     var mv = mat4();
     switch( view ) {
+        case 0:
+            // a) Augað er ofan á húsinu sem er í hnitum (-40, 140)
+            mv = lookAt(vec3(-40.0, 140.0, 20 + height),
+                        vec3(carXPos, carYPos, 0.0),
+                        vec3(0.0, 0.0, 1.0));
+            drawScenery(mv);
+            mv = mult(mv, translate(carXPos, carYPos, 0.0));
+            mv = mult(mv, rotateZ(carDirection));
+            drawCar(mv);
+            break;
         case 1:
             // Distant and stationary viewpoint
 	    mv = lookAt( vec3(250.0, 0.0, 100.0+height), vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0) );
@@ -325,7 +389,16 @@ function render()
 	    mv = mult( mv, translate(-carXPos, -carYPos, 0.0) );
 	    drawScenery( mv );
 	    break;
-	    
+    case 9:
+        // b) Auga í fastri haed
+        mv = lookAt(vec3(posX, 0.0 + posY, 10.0),
+                    vec3(posX + dirX, 0.0 + posY + dirY, 10.0),
+                    vec3(0.0, 0.0, 1.0));
+        drawScenery( mv );
+        mv = mult( mv, translate(carXPos, carYPos, 0.0) );
+        mv = mult( mv, rotateZ( carDirection ) );
+        drawCar( mv );
+        break;
     }
     
     
