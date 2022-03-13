@@ -10,18 +10,16 @@ uniform mat4 projectionMatrix;
 uniform vec4 lightPosition;
 uniform mat3 normalMatrix;
 
-varying vec4 bhinn_color;
-uniform vec4 ambientProduct_bhinn,
-             diffuseProduct_bhinn,
-             specularProduct_bhinn;
-uniform float shininess_bhinn;
+varying vec4 blinn_color;
+uniform vec4 ambientProduct_blinn, diffuseProduct_blinn, specularProduct_blinn;
+uniform float shininess_blinn;
 
 void main()
 {
     vec3 pos = (modelViewMatrix * vPosition).xyz;
 
     // check for directional light
-    if (lightPosition.w == 0.0) L = normalize(lightPosition.xyz);
+    if(lightPosition.w == 0.0) L = normalize(lightPosition.xyz);
     else L = normalize( lightPosition.xyz - pos );
 
     E =  -normalize(pos);
@@ -29,20 +27,20 @@ void main()
 
     vec3 H = (normalize(L+E));
 
-    vec4 ambient = ambientProduct_bhinn;
+    vec4 ambient = ambientProduct_blinn;
 
     float Kd = max( dot(L, N), 0.0 );
-    vec4 diffuse = Kd * diffuseProduct_bhinn;
+    vec4 diffuse = Kd * diffuseProduct_blinn;
 
-    float Ks = pow(max(dot(N, H), 0.0), shininess_bhinn);
-    vec4 specular = Ks * specularProduct_bhinn;
+    float Ks = pow(max(dot(N, H), 0.0), shininess_blinn);
+    vec4 specular = Ks * specularProduct_blinn;
 
     if(dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-    gl_Position = projectionMatrix*modelViewMatrix*vPosition;
+    gl_Position = projectionMatrix * modelViewMatrix * vPosition;
 
-    bhinn_color = ambient + diffuse + specular;
-    bhinn_color.a = 1.0;
+    blinn_color = ambient + diffuse + specular;
+    blinn_color.a = 1.0;
 }
 </script>
 
@@ -56,12 +54,12 @@ uniform vec4 specularProduct;
 uniform float shininess;
 varying vec3 N, L, E;
 
-varying vec4 bhinn_color;
-uniform bool bhinn;
+varying vec4 blinn_color;
+uniform bool blong;
 
 void main()
 {
-    if(!bhinn){
+    if(!blong){
     vec4 fColor;
 
     vec3 H = normalize( normalize(L) + normalize(E) );
@@ -80,7 +78,7 @@ void main()
 
     gl_FragColor = fColor;
     }
-    else gl_FragColor = bhinn_color;
+    else gl_FragColor = blinn_color;
 }
 </script>
 
@@ -101,8 +99,7 @@ void main()
     <tr>
       <td> <canvas id="gl-canvas" width="512" height="512"></canvas></td>
       <td>
-          <button id="Bhinn-Pong" style="width: 100px; margin: 10px" >Bhinn-Pong</button> <br>
-          <button id="Phong" style="width: 100px; margin: 10px">Phong</button> <br>
+          Change to: <button id="btnBlong" style="width: 100px; margin: 10px">Blinn-Phong</button> <br>
           <button id="btnIncrease" style="width: 180px; margin: 10px">Increase Subdivisions</button> <br>
           <button id="btnDecrease" style="width: 180px; margin: 10px">Decrease Subdivisions</button> <br>
           Number of subdivisions: <div id="Subdivisions">3</div> <br>
