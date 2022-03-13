@@ -208,15 +208,29 @@ window.onload = function init()
                 document.getElementById("Viewpoint").innerHTML = "9: Augað er í fastri hæð";
                 break;
             case 38:    // up arrow
-                height += 2.0;
-                posX += change*dirX;
-                posY += change*dirY;
+                if (view === 9) {
+                    posX += change * dirX;
+                    posY += change * dirY;
+                } else {
+                    height += 2.0;
+                    posX = 0;
+                    posY = 20;
+                    dirX = spinX;
+                    dirY = spinY;
+                }
                 document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
                 break;
             case 40:    // down arrow
-                height -= 2.0;
-                posX -= change*dirX;
-                posY -= change*dirY;
+                if (view === 9) {
+                    posX -= change * dirX;
+                    posY -= change * dirY;
+                } else {
+                    height -= 2.0;
+                    posX = 0;
+                    posY = 20;
+                    dirX = spinX;
+                    dirY = spinY;
+                }
                 document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
                 break;
         }
