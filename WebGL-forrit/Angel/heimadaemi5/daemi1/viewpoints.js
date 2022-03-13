@@ -43,18 +43,18 @@ var cubeBuffer;
 var trackBuffer;
 var vPosition;
 
+// Stuff
 let spinX = 200;
 let spinY = 0;
 let movement = false;
 let origX;
 let origY;
-
-// User stuff
 let dirX = spinX;
 let dirY = spinY;
 let angle = 270.0;
 let posX = 0;
 let posY = 20;
+let change = 0.3;
 
 // the 36 vertices of the cube
 var cVertices = [
@@ -209,10 +209,14 @@ window.onload = function init()
                 break;
             case 38:    // up arrow
                 height += 2.0;
+                posX += change*dirX;
+                posY += change*dirY;
                 document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
                 break;
             case 40:    // down arrow
                 height -= 2.0;
+                posX -= change*dirX;
+                posY -= change*dirY;
                 document.getElementById("Height").innerHTML = "Viðbótarhæð: "+ height;
                 break;
         }
