@@ -48,12 +48,13 @@ let spinY = 0;
 let movement = false;
 let origX;
 let origY;
+
+// User stuff
 let dirX = spinX;
 let dirY = spinY;
-var angle = 270.0;
+let angle = 270.0;
 let posX = 0;
 let posY = 20;
-var userIncr = 0.5;
 
 // the 36 vertices of the cube
 var cVertices = [
@@ -201,9 +202,9 @@ window.onload = function init()
                 view = 8;
                 document.getElementById("Viewpoint").innerHTML = "8: Til hliðar við bílinn";
                 break;
-            case 57: //b) Augað í fastri hæð"
+            case 57: // b) Augað í fastri hæð
                 view = 9;
-                height = 0.0;
+                height = 5.0;
                 document.getElementById("Viewpoint").innerHTML = "9: Augað er í fastri hæð";
                 break;
             case 38:    // up arrow
@@ -391,8 +392,8 @@ function render()
 	    break;
     case 9:
         // b) Auga í fastri haed
-        mv = lookAt(vec3(posX, 0.0 + posY, 10.0),
-                    vec3(posX + dirX, 0.0 + posY + dirY, 10.0),
+        mv = lookAt(vec3(posX, posY, 10.0),
+                    vec3(posX + dirX, posY + dirY, 10.0),
                     vec3(0.0, 0.0, 1.0));
         drawScenery( mv );
         mv = mult( mv, translate(carXPos, carYPos, 0.0) );
