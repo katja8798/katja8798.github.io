@@ -36,7 +36,10 @@ var materialSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
 var materialShininess = 50.0;
 
 var ctm;
-var ambientColor, diffuseColor, specularColor;
+var ambientColor, specularColor;
+let diffuseColor = 180;
+let diffuseProduct, ambientProduct, specularProduct;
+let discard_num = 1.8;
 
 var modelViewMatrix, projectionMatrix;
 var modelViewMatrixLoc, projectionMatrixLoc;
@@ -107,6 +110,7 @@ window.onload = function init() {
     gl.uniform4fv( gl.getUniformLocation(program, "specularProduct"), flatten(specularProduct) );
     gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition) );
     gl.uniform1f( gl.getUniformLocation(program, "shininess"), materialShininess );
+    gl.uniform1f( gl.getUniformLocation(program, "discard_num"), discard_num );
 
     //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
@@ -138,7 +142,64 @@ window.onload = function init() {
          }
      }  );
 
+    // Event listener for keyboard
+    window.addEventListener("keydown", function (e) {
+        switch (e.keyCode) {
+            // lidur i)
+            case 38:    // up arrow, talan hækkar, max 4
+                if (discard_num < 4) {
+                    discard_num += 0.1;
+                    gl.uniform1f(gl.getUniformLocation(program, "discard_num"), discard_num);
+                }
+                break;
+            case 40:    // down arrow, talan lækkar, min 0
+                if (discard_num > 0) {
+                    discard_num -= 0.1;
+                    gl.uniform1f(gl.getUniformLocation(program, "discard_num"), discard_num);
+                }
+                break;
+            // lidur ii)
+            case 37:    // left arrow, talan lækkar, min 0
+                if (diffuseColor > 0) {
+                    diffuseColor -= 1;
+                    diffuseProduct = mult(lightDiffuse, toRGBA(diffuseColor));
+                    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
+                }
+                break;
+            case 39:    // right arrow, talan hækkar, max 999
+                if (diffuseColor <= 998) {
+                    diffuseColor += 1;
+                    diffuseProduct = mult(lightDiffuse, toRGBA(diffuseColor));
+                    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct"), flatten(diffuseProduct));
+                }
+                break;
+        }
+    });
+
     render();
+}
+
+function toRGBA(num) {
+    let R = 0, G = 0, B = 0;
+
+    if (num < 10) {
+        B = num/10;
+    }
+    else if (num < 100) {
+        G = Math.floor(num/10)/10;
+        B = (num-G*100)/10;
+    }
+    else {
+        R = Math.floor(num/100)/10;
+        G = Math.floor((num-R*1000)/10)/10;
+        B = (num-R*1000-G*100)/10;
+    }
+
+    if (R === 0) R = 0.1;
+    if (G === 0) G = 0.1;
+    if (B === 0) B = 0.1;
+
+    return vec4(R,G,B, 1.0);
 }
 
 
