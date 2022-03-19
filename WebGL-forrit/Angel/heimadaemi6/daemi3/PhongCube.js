@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////
 //    Sýnidæmi í Tölvugrafík
-//     Kúla sem lituð er með Phong litun.  Hægt að snúa henni
+//     Kúla sem lituð er með flatri litun.  Hægt að snúa henni
 //     með músinni og auka/minnka nákvæmni kúlunnar með hnöppum
 //
 //    Hjálmtýr Hafsteinsson, mars 2022
@@ -40,7 +40,7 @@ var lightSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
 var materialAmbient = vec4( 1.0, 0.0, 1.0, 1.0 );
 var materialDiffuse = vec4( 1.0, 0.8, 0.0, 1.0 );
 var materialSpecular = vec4( 1.0, 1.0, 1.0, 1.0 );
-var materialShininess = 20.0;
+var materialShininess = 120.0;
 
 var ctm;
 var ambientColor, diffuseColor, specularColor;
@@ -54,53 +54,30 @@ var eye;
 var at = vec3(0.0, 0.0, 0.0);
 var up = vec3(0.0, 1.0, 0.0);
 
-// Upphafstilling, sýnum Phong fyrst
-let blong = false;
 
 function triangle(a, b, c) {
+
+    var t1 = subtract(b, a);
+    var t2 = subtract(c, a);
+    var normal = normalize(cross(t2, t1));
+    normal = vec4(normal);
+
+    normalsArray.push(normal);
+    normalsArray.push(normal);
+    normalsArray.push(normal);
 
     pointsArray.push(a);
     pointsArray.push(b);
     pointsArray.push(c);
 
-    // normals are vectors
-
-    normalsArray.push(a[0],a[1], a[2], 0.0);
-    normalsArray.push(b[0],b[1], b[2], 0.0);
-    normalsArray.push(c[0],c[1], c[2], 0.0);
-
     index += 3;
-
 }
 
-
-function divideTriangle(a, b, c, count) {
-    if ( count > 0 ) {
-
-        var ab = mix( a, b, 0.5);
-        var ac = mix( a, c, 0.5);
-        var bc = mix( b, c, 0.5);
-
-        ab = normalize(ab, true);
-        ac = normalize(ac, true);
-        bc = normalize(bc, true);
-
-        divideTriangle( a, ab, ac, count - 1 );
-        divideTriangle( ab, b, bc, count - 1 );
-        divideTriangle( bc, c, ac, count - 1 );
-        divideTriangle( ab, bc, ac, count - 1 );
-    }
-    else {
-        triangle( a, b, c );
-    }
-}
-
-
-function tetrahedron(a, b, c, d, n) {
-    divideTriangle(a, b, c, n);
-    divideTriangle(d, c, b, n);
-    divideTriangle(a, d, b, n);
-    divideTriangle(a, c, d, n);
+function tetrahedron(a, b, c, d) {
+    triangle(a, b, c);
+    triangle(d, c, b);
+    triangle(a, d, b);
+    triangle(a, c, d);
 }
 
 window.onload = function init() {
@@ -114,13 +91,6 @@ window.onload = function init() {
     gl.clearColor( 0.9, 1.0, 1.0, 1.0 );
 
     gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
-
-    var dypi = gl.getParameter(gl.DEPTH_BITS);
-    var gildi = gl.getParameter(gl.DEPTH_CLEAR_VALUE);
-    var bil = gl.getParameter(gl.DEPTH_RANGE);
-    //gl.enable(gl.CULL_FACE);
-    //gl.cullFace(gl.BACK);
 
     //
     //  Load shaders and initialize attribute buffers
@@ -134,10 +104,7 @@ window.onload = function init() {
     specularProduct = mult(lightSpecular, materialSpecular);
 
 
-    tetrahedron(va, vb, vc, vd, numTimesToSubdivide);
-
-    document.getElementById("Subdivisions").innerHTML = numTimesToSubdivide;
-    document.getElementById("NrVertices").innerHTML = index;
+    tetrahedron(va, vb, vc, vd);
 
     var nBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, nBuffer);
@@ -167,42 +134,7 @@ window.onload = function init() {
     gl.uniform4fv( gl.getUniformLocation(program, "lightPosition"), flatten(lightPosition) );
     gl.uniform1f( gl.getUniformLocation(program, "shininess"), materialShininess );
 
-    // Fyrir Blinn-Phong
-    gl.uniform4fv(gl.getUniformLocation(program, "ambientProduct_blinn"), flatten(ambientProduct));
-    gl.uniform4fv(gl.getUniformLocation(program, "diffuseProduct_blinn"), flatten(diffuseProduct));
-    gl.uniform4fv(gl.getUniformLocation(program, "specularProduct_blinn"), flatten(specularProduct));
-    gl.uniform1f(gl.getUniformLocation(program, "shininess_blinn"), materialShininess);
-    gl.uniform1f(gl.getUniformLocation(program, "blong"), blong);
-
-
-    document.getElementById("btnBlong").onclick = function () {
-        blong = !blong;
-        gl.uniform1f(gl.getUniformLocation(program, "blong"), blong);
-        if(!blong){
-            document.getElementById("btnBlong").innerText = "Blinn-Phong";
-        }else{
-            document.getElementById("btnBlong").innerText = "Phong";
-        }
-    };
-
-    document.getElementById("btnIncrease").onclick = function(){
-        if( numTimesToSubdivide < 7 ) numTimesToSubdivide++;
-        document.getElementById("Subdivisions").innerHTML = numTimesToSubdivide;
-        index = 0;
-        pointsArray = [];
-        normalsArray = [];
-        init();
-    };
-    document.getElementById("btnDecrease").onclick = function(){
-        if( numTimesToSubdivide > 0 ) numTimesToSubdivide--;
-        document.getElementById("Subdivisions").innerHTML = numTimesToSubdivide;
-        index = 0;
-        pointsArray = [];
-        normalsArray = [];
-        init();
-    };
-
-    // Event listeners for mouse
+    //event listeners for mouse
     canvas.addEventListener("mousedown", function(e){
         movement = true;
         origX = e.clientX;

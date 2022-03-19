@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0060)https://hjalmtyr.github.io/WebGL-forrit/Angel/PhongKula.html -->
-<html lang=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script id="vertex-shader" type="x-shader/x-vertex">
+<html>
+
+<script id="vertex-shader" type="x-shader/x-vertex">
 
 attribute vec4 vPosition;
 attribute vec4 vNormal;
@@ -9,10 +10,6 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec4 lightPosition;
 uniform mat3 normalMatrix;
-
-varying vec4 blinn_color;
-uniform vec4 ambientProduct_blinn, diffuseProduct_blinn, specularProduct_blinn;
-uniform float shininess_blinn;
 
 void main()
 {
@@ -25,22 +22,8 @@ void main()
     E =  -normalize(pos);
     N = normalize( normalMatrix*vNormal.xyz);
 
-    vec3 H = (normalize(L+E));
-
-    vec4 ambient = ambientProduct_blinn;
-
-    float Kd = max( dot(L, N), 0.0 );
-    vec4 diffuse = Kd * diffuseProduct_blinn;
-
-    float Ks = pow(max(dot(N, H), 0.0), shininess_blinn);
-    vec4 specular = Ks * specularProduct_blinn;
-
-    if(dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
-
     gl_Position = projectionMatrix * modelViewMatrix * vPosition;
 
-    blinn_color = ambient + diffuse + specular;
-    blinn_color.a = 1.0;
 }
 </script>
 
@@ -54,12 +37,8 @@ uniform vec4 specularProduct;
 uniform float shininess;
 varying vec3 N, L, E;
 
-varying vec4 blinn_color;
-uniform bool blong;
-
 void main()
 {
-    if(!blong){
     vec4 fColor;
 
     vec3 H = normalize( normalize(L) + normalize(E) );
@@ -77,8 +56,6 @@ void main()
     fColor.a = 1.0;
 
     gl_FragColor = fColor;
-    }
-    else gl_FragColor = blinn_color;
 }
 </script>
 
@@ -86,28 +63,8 @@ void main()
 <script type="text/javascript" src="../../../Common/initShaders.js"></script>
 <script type="text/javascript" src="../../../Common/MV.js"></script>
 <script type="text/javascript" src="PhongCube.js"></script>
-    <title></title>
 
-</head>
 <body>
-<table style="width:100%">
-  <tbody>
-    <tr>
-      <th>Ball</th>
-      <th>Settings</th>
-    </tr>
-    <tr>
-      <td> <canvas id="gl-canvas" width="512" height="512"></canvas></td>
-      <td>
-          Change to: <button id="btnBlong" style="width: 100px; margin: 10px">Blinn-Phong</button> <br>
-          <button id="btnIncrease" style="width: 180px; margin: 10px">Increase Subdivisions</button> <br>
-          <button id="btnDecrease" style="width: 180px; margin: 10px">Decrease Subdivisions</button> <br>
-          Number of subdivisions: <div id="Subdivisions">3</div> <br>
-          Number of vertices: <div id="NrVertices">768</div> <br>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-<div id="extwaiokist" style="display:none" v="nipgg" q="268ca998" c="103.3" i="109" u="14.11" s="02232205" d="1" w="false" e="" m="BMe=" vn="9adfy"><div id="extwaigglbit" style="display:none" v="nipgg" q="268ca998" c="103.3" i="109" u="14.11" s="02232205" d="1" w="false" e="" m="BMe="></div></div></body></html>
+<canvas id="gl-canvas" width="512" height="512"></canvas>
+</body>
+</html>
