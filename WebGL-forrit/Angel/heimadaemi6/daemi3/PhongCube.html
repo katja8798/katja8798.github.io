@@ -1,29 +1,26 @@
-<!DOCTYPE html>
 <html>
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 
 attribute vec4 vPosition;
 attribute vec4 vNormal;
-varying vec3 N, L, E;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-uniform vec4 lightPosition;
+
+uniform mat4 rotation;
 uniform mat3 normalMatrix;
+
+varying vec3 N, L, E;
+
+uniform vec4 lightPosition;
 
 void main()
 {
-    vec3 pos = (modelViewMatrix * vPosition).xyz;
+    vec3 pos = (rotation * vPosition).xyz;
 
-    // check for directional light
-    if(lightPosition.w == 0.0) L = normalize(lightPosition.xyz);
-    else L = normalize( lightPosition.xyz - pos );
+    L = normalize(lightPosition.xyz - pos);
+    E = -normalize(pos);
+    N = normalize(normalMatrix*vNormal.xyz);
 
-    E =  -normalize(pos);
-    N = normalize( normalMatrix*vNormal.xyz);
-
-    gl_Position = projectionMatrix * modelViewMatrix * vPosition;
-
+    gl_Position = rotation * vPosition;
 }
 </script>
 
@@ -31,31 +28,31 @@ void main()
 
 precision mediump float;
 
-uniform vec4 ambientProduct;
-uniform vec4 diffuseProduct;
-uniform vec4 specularProduct;
-uniform float shininess;
 varying vec3 N, L, E;
+uniform float shininess;
 
-void main()
+uniform vec4 specularColor;
+uniform vec4 ambientColor;
+uniform vec4 diffuseColor;
+
+void
+main()
 {
-    vec4 fColor;
+    vec3 H = normalize(L + E);
+    vec4 ambient = ambientColor;
 
-    vec3 H = normalize( normalize(L) + normalize(E) );
-    vec4 ambient = ambientProduct;
+    float cos_th = max(dot(normalize(L), normalize(N)), 0.0);
+    vec4 diffuse = cos_th * diffuseColor;
 
-    float Kd = max( dot(normalize(L), normalize(N)), 0.0 );
-    vec4  diffuse = Kd*diffuseProduct;
+    float cos_phi = pow(max(dot(normalize(N), normalize(H)), 0.0), shininess);
+    vec4 specular = cos_phi * specularColor;
 
-    float Ks = pow( max(dot(normalize(N), H), 0.0), shininess );
-    vec4  specular = Ks * specularProduct;
+    if(dot(L, N) < 0.0) specular = vec4(0.0, 0.0, 0.0, 1.0);
 
-    if( dot(normalize(L), normalize(N)) < 0.0 ) specular = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 color = diffuse + ambient + specular;
+    color.a = 1.0;
 
-    fColor = ambient + diffuse +specular;
-    fColor.a = 1.0;
-
-    gl_FragColor = fColor;
+    gl_FragColor = color;
 }
 </script>
 
