@@ -33,11 +33,11 @@ var normalMatrixLoc;
 var normalMatrix = [];
 
 var specularColor = vec4(1.0, 1.0, 1.0, 1.0);
-var diffuseColor = vec4(0.0, 0.5, 0.0, 1.0);
-var ambientColor = vec4(0.2, 0.0, 0.2, 1.0);
+var diffuseColor = vec4(0.2, 0.0, 0.2, 1.0);
+var ambientColor = vec4(0.4, 0.1, 0.4, 1.0);
 
 var lightPosition = vec4(1.0, 1.0, 1.0, 1.0);
-var shininess = 10;
+var shininess = 50.0;
 
 window.onload = function init()
 {
@@ -63,9 +63,9 @@ window.onload = function init()
     gl.bindBuffer( gl.ARRAY_BUFFER, cBuffer );
     gl.bufferData( gl.ARRAY_BUFFER, flatten(colors), gl.STATIC_DRAW );
 
-    var vColor = gl.getAttribLocation( program, "vNormal" );
-    gl.vertexAttribPointer( vColor, 4, gl.FLOAT, false, 0, 0 );
-    gl.enableVertexAttribArray( vColor );
+    var vNormal = gl.getAttribLocation( program, "vNormal" );
+    gl.vertexAttribPointer( vNormal, 4, gl.FLOAT, false, 0, 0 );
+    gl.enableVertexAttribArray( vNormal );
 
     var vBuffer = gl.createBuffer();
     gl.bindBuffer( gl.ARRAY_BUFFER, vBuffer );
@@ -120,48 +120,25 @@ function colorCube()
 
 function quad(a, b, c, d)
 {
-    var vertices = [
-        vec3( -0.5, -0.5,  0.5 ),
-        vec3( -0.5,  0.5,  0.5 ),
-        vec3(  0.5,  0.5,  0.5 ),
-        vec3(  0.5, -0.5,  0.5 ),
-        vec3( -0.5, -0.5, -0.5 ),
-        vec3( -0.5,  0.5, -0.5 ),
-        vec3(  0.5,  0.5, -0.5 ),
-        vec3(  0.5, -0.5, -0.5 )
+    const vertices = [
+        vec3(-0.5, -0.5,  0.5),
+        vec3(-0.5,  0.5,  0.5),
+        vec3( 0.5,  0.5,  0.5),
+        vec3( 0.5, -0.5,  0.5),
+        vec3(-0.5, -0.5, -0.5),
+        vec3(-0.5,  0.5, -0.5),
+        vec3( 0.5,  0.5, -0.5),
+        vec3( 0.5, -0.5, -0.5)
     ];
 
-    var vertexColors = [
-        [ 0.0, 0.0, 0.0, 1.0 ],  // black
-        [ 1.0, 0.0, 0.0, 1.0 ],  // red
-        [ 1.0, 1.0, 0.0, 1.0 ],  // yellow
-        [ 0.0, 1.0, 0.0, 1.0 ],  // green
-        [ 0.0, 0.0, 1.0, 1.0 ],  // blue
-        [ 1.0, 0.0, 1.0, 1.0 ],  // magenta
-        [ 0.0, 1.0, 1.0, 1.0 ],  // cyan
-        [ 1.0, 1.0, 1.0, 1.0 ]   // white
-    ];
+    const indices = [a, b, c, a, c, d];
+    let t1 = subtract(vertices[b], vertices[a]);
+    let t2 = subtract(vertices[c], vertices[a]);
+    let normal = vec4(normalize(cross(t2, t1)));
 
-    // We need to partition the quad into two triangles in order for
-    // WebGL to be able to render it.  In this case, we create two
-    // triangles from the quad indices
-
-    //vertex color assigned by the index of the vertex
-
-    var indices = [ a, b, c, a, c, d ];
-    const t1 = subtract(vertices[b], vertices[a]);
-    const t2 = subtract(vertices[c], vertices[a]);
-
-    let normal = normalize(cross(t2, t1));
-    normal = vec4(normal);
-
-    for ( var i = 0; i < indices.length; ++i ) {
+    for (let i = 0; i < indices.length; ++i ) {
         points.push( vertices[indices[i]] );
         colors.push( normal );
-
-        // for solid colored faces use
-        //colors.push(vertexColors[a]);
-
     }
 }
 
@@ -169,7 +146,7 @@ function render()
 {
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var mv = mat4();
+    let mv = mat4();
     mv = mult( mv, rotateX(spinX) );
     mv = mult( mv, rotateY(spinY) );
 
