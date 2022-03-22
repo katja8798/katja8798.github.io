@@ -142,8 +142,11 @@ window.onload = function init() {
     gl.vertexAttribPointer( locTexCoord, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( locTexCoord );
     
-    var image = document.getElementById("texImage");
-    configureTexture( image, program2 );
+    //var image1 = document.getElementById("texImage1");
+    //configureTexture( image1, program2 );
+
+    var image2 = document.getElementById("texImage2");
+    configureTexture( image2, program2 );
 
     locProjection2 = gl.getUniformLocation( program2, "projection" );
     locModelView2 = gl.getUniformLocation( program2, "modelview" );
