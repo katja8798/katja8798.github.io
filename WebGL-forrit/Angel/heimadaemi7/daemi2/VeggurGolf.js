@@ -43,36 +43,51 @@ var mvLoc;
 
 // Hnútar veggsins
 var vertices = [
-    vec4( -5.0,  0.0, 0.0, 1.0 ),
-    vec4(  5.0,  0.0, 0.0, 1.0 ),
-    vec4(  5.0,  1.0, 0.0, 1.0 ),
-    vec4(  5.0,  1.0, 0.0, 1.0 ),
-    vec4( -5.0,  1.0, 0.0, 1.0 ),
-    vec4( -5.0,  0.0, 0.0, 1.0 ),
-// Hnútar gólfsins (strax á eftir)
-    vec4( -5.0,  0.0, 10.0, 1.0 ),
-    vec4(  5.0,  0.0, 10.0, 1.0 ),
-    vec4(  5.0,  0.0,  0.0, 1.0 ),
-    vec4(  5.0,  0.0,  0.0, 1.0 ),
-    vec4( -5.0,  0.0,  0.0, 1.0 ),
-    vec4( -5.0,  0.0, 10.0, 1.0 )
+    // Hnútar hjá vegg 1
+    vec4( -250.0,  0.0, 0.0, 1.0 ),
+    vec4(  250.0,  0.0, 0.0, 1.0 ),
+    vec4(  250.0,  1.0, 0.0, 1.0 ),
+    vec4(  250.0,  1.0, 0.0, 1.0 ),
+    vec4( -250.0,  1.0, 0.0, 1.0 ),
+    vec4( -250.0,  0.0, 0.0, 1.0 ),
+    // Hnútar gólfsins (strax á eftir)
+    vec4( -250.0,  0.0, 3.0, 1.0 ),
+    vec4(  250.0,  0.0, 3.0, 1.0 ),
+    vec4(  250.0,  0.0,  0.0, 1.0 ),
+    vec4(  250.0,  0.0,  0.0, 1.0 ),
+    vec4( -250.0,  0.0,  0.0, 1.0 ),
+    vec4( -250.0,  0.0, 3.0, 1.0 ),
+    // Hnútar hjá vegg 2
+    vec4( -250.0,  0.0, 3.0, 1.0 ),
+    vec4(  250.0,  0.0, 3.0, 1.0 ),
+    vec4(  250.0,  1.0, 3.0, 1.0 ),
+    vec4(  250.0,  1.0, 3.0, 1.0 ),
+    vec4( -250.0,  1.0, 3.0, 1.0 ),
+    vec4( -250.0,  0.0, 3.0, 1.0 ),
 ];
 
-// Mynsturhnit fyrir vegg
 var texCoords = [
+    // Mynsturhnit fyrir vegg 1
     vec2(  0.0, 0.0 ),
-    vec2( 10.0, 0.0 ),
-    vec2( 10.0, 1.0 ),
-    vec2( 10.0, 1.0 ),
+    vec2( 400.0, 0.0 ),
+    vec2( 400.0, 1.0 ),
+    vec2( 400.0, 1.0 ),
     vec2(  0.0, 1.0 ),
     vec2(  0.0, 0.0 ),
-// Mynsturhnit fyrir gólf
+    // Mynsturhnit fyrir gólf
     vec2(  0.0,  0.0 ),
-    vec2( 10.0,  0.0 ),
-    vec2( 10.0, 10.0 ),
-    vec2( 10.0, 10.0 ),
+    vec2( 500.0,  0.0 ),
+    vec2( 500.0, 10.0 ),
+    vec2( 500.0, 10.0 ),
     vec2(  0.0, 10.0 ),
-    vec2(  0.0,  0.0 )
+    vec2(  0.0,  0.0 ),
+    // Mynsturhnit fyrir vegg 2
+    vec2(  0.0, 0.0 ),
+    vec2( 400.0, 0.0 ),
+    vec2( 400.0, 1.0 ),
+    vec2( 400.0, 1.0 ),
+    vec2(  0.0, 1.0 ),
+    vec2(  0.0, 0.0 )
 ];
 
 
@@ -202,17 +217,24 @@ var render = function(){
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // staðsetja áhorfanda og meðhöndla músarhreyfingu
-    var mv = lookAt( vec3(userXPos, 0.5, userZPos), vec3(userXPos+userXDir, 0.5, userZPos+userZDir), vec3(0.0, 1.0, 0.0 ) );
+    var mv = lookAt(vec3(userXPos, 0.5, userZPos),
+                    vec3(userXPos+userXDir, 0.5, userZPos+userZDir),
+                    vec3(0.0, 1.0, 0.0 )
+    );
     
     gl.uniformMatrix4fv(mvLoc, false, flatten(mv));
 
-    // Teikna vegg með mynstri
+    // Teikna vegg 1 með mynstri
     gl.bindTexture( gl.TEXTURE_2D, texVegg );
     gl.drawArrays( gl.TRIANGLES, 0, numVertices );
 
     // Teikna gólf með mynstri
     gl.bindTexture( gl.TEXTURE_2D, texGolf );
     gl.drawArrays( gl.TRIANGLES, numVertices, numVertices );
+
+    // Teikna vegg 2 með mynstri
+    gl.bindTexture( gl.TEXTURE_2D, texVegg );
+    gl.drawArrays( gl.TRIANGLES, numVertices*2, numVertices );
 
     requestAnimFrame(render);
 }
