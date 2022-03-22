@@ -92,7 +92,7 @@ function configureTexture( image, prog ) {
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST );
     
     gl.useProgram(prog);
-    gl.uniform1i(gl.getUniformLocation(prog, "texture"), 1);
+    gl.uniform1i(gl.getUniformLocation(prog, "texture"), 0);
 }
 
 
