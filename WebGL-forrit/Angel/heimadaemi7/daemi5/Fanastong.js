@@ -23,6 +23,7 @@ var origX;
 var origY;
 
 var zDist = 5.0;
+var yLoc = 1.0;
 
 var locProjection1;
 var locModelView1;
@@ -186,10 +187,10 @@ window.onload = function init() {
      window.addEventListener("keydown", function(e){
          switch( e.keyCode ) {
             case 38:	// upp ör
-                zDist += 0.1;
+                if (yLoc < 1.0) yLoc += 0.1;
                 break;
             case 40:	// niður ör
-                zDist -= 0.1;
+                if (yLoc > -0.9) yLoc -= 0.1;
                 break;
          }
      }  );  
@@ -232,7 +233,7 @@ var render = function(){
 
     // teikna fánann með liturum 2
     gl.useProgram(program2);
-    mv2 = mult( mv2, translate(0.16, 1.0, 0.0) );
+    mv2 = mult( mv2, translate(0.16, yLoc, 0.0) );
     mv2 = mult( mv2, scalem(0.5, 0.5, 0.5) );
     gl.uniformMatrix4fv(locModelView2, false, flatten(mv2));
 
