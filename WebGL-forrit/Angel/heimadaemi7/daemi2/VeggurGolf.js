@@ -210,24 +210,26 @@ window.onload = function init() {
      window.addEventListener("keydown", function(e){
          switch( e.keyCode ) {
             case 87:	// w
-                userXPos += userIncr * userXDir;
-                userZPos += userIncr * userZDir;
+                nextXPos = userXPos + userIncr * userXDir;
+                nextZPos = userZPos + userIncr * userZDir;
                 break;
             case 83:	// s
 
-                userXPos -= userIncr * userXDir;
-                userZPos -= userIncr * userZDir;;
+                nextXPos = userXPos - userIncr * userXDir;
+                nextZPos = userZPos - userIncr * userZDir;
                 break;
             case 65:	// a
 
-                userXPos += userIncr * userZDir;
-                userZPos -= userIncr * userXDir;;
+                nextXPos = userXPos + userIncr * userZDir;
+                nextZPos = userZPos - userIncr * userXDir;
                 break;
             case 68:	// d
-                userXPos -= userIncr * userZDir;
-                userZPos += userIncr * userXDir;;
+                nextXPos = userXPos - userIncr * userZDir;
+                nextZPos = userZPos + userIncr * userXDir;
                 break;
          }
+         if (nextXPos > -99.8 && nextXPos < 99.8) userXPos = nextXPos;
+         if (nextZPos > 0.8 && nextZPos < 1.8) userZPos = nextZPos;
      }  );  
 
     // Event listener for mousewheel
