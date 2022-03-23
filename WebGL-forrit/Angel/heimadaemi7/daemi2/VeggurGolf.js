@@ -20,14 +20,17 @@ var texCoordsArray = [];
 var texture;
 var texVegg;
 var texGolf;
+var texCeil;
 
 // Breytur fyrir hreyfingu áhorfanda
 var userXPos = 0.0;
-var userZPos = 2.0;
+var userZPos = 1.0;
 var userIncr = 0.1;                // Size of forward/backward step
 var userAngle = 270.0;             // Direction of the user in degrees
 var userXDir = 0.0;                // X-coordinate of heading
 var userZDir = -1.0;               // Z-coordinate of heading
+var nextXPos = userXPos;
+var nextZPos = userZPos;
 
 
 var movement = false;
@@ -44,50 +47,64 @@ var mvLoc;
 // Hnútar veggsins
 var vertices = [
     // Hnútar hjá vegg 1
-    vec4( -250.0,  0.0, 0.0, 1.0 ),
-    vec4(  250.0,  0.0, 0.0, 1.0 ),
-    vec4(  250.0,  1.0, 0.0, 1.0 ),
-    vec4(  250.0,  1.0, 0.0, 1.0 ),
-    vec4( -250.0,  1.0, 0.0, 1.0 ),
-    vec4( -250.0,  0.0, 0.0, 1.0 ),
+    vec4( -100.0,  0.0, 0.0, 1.0 ),
+    vec4(  100.0,  0.0, 0.0, 1.0 ),
+    vec4(  100.0,  2.0, 0.0, 1.0 ),
+    vec4(  100.0,  2.0, 0.0, 1.0 ),
+    vec4( -100.0,  2.0, 0.0, 1.0 ),
+    vec4( -100.0,  0.0, 0.0, 1.0 ),
     // Hnútar gólfsins (strax á eftir)
-    vec4( -250.0,  0.0, 3.0, 1.0 ),
-    vec4(  250.0,  0.0, 3.0, 1.0 ),
-    vec4(  250.0,  0.0,  0.0, 1.0 ),
-    vec4(  250.0,  0.0,  0.0, 1.0 ),
-    vec4( -250.0,  0.0,  0.0, 1.0 ),
-    vec4( -250.0,  0.0, 3.0, 1.0 ),
+    vec4( -100.0,  0.0, 2.0, 1.0 ),
+    vec4(  100.0,  0.0, 2.0, 1.0 ),
+    vec4(  100.0,  0.0, 0.0, 1.0 ),
+    vec4(  100.0,  0.0, 0.0, 1.0 ),
+    vec4( -100.0,  0.0, 0.0, 1.0 ),
+    vec4( -100.0,  0.0, 2.0, 1.0 ),
     // Hnútar hjá vegg 2
-    vec4( -250.0,  0.0, 3.0, 1.0 ),
-    vec4(  250.0,  0.0, 3.0, 1.0 ),
-    vec4(  250.0,  1.0, 3.0, 1.0 ),
-    vec4(  250.0,  1.0, 3.0, 1.0 ),
-    vec4( -250.0,  1.0, 3.0, 1.0 ),
-    vec4( -250.0,  0.0, 3.0, 1.0 ),
+    vec4( -100.0,  0.0, 2.0, 1.0 ),
+    vec4(  100.0,  0.0, 2.0, 1.0 ),
+    vec4(  100.0,  2.0, 2.0, 1.0 ),
+    vec4(  100.0,  2.0, 2.0, 1.0 ),
+    vec4( -100.0,  2.0, 2.0, 1.0 ),
+    vec4( -100.0,  0.0, 2.0, 1.0 ),
+    // Hnútar hjá loft
+    vec4( -100.0,  2.0, 2.0, 1.0 ),
+    vec4(  100.0,  2.0, 2.0, 1.0 ),
+    vec4(  100.0,  2.0, 0.0, 1.0 ),
+    vec4(  100.0,  2.0, 0.0, 1.0 ),
+    vec4( -100.0,  2.0, 0.0, 1.0 ),
+    vec4( -100.0,  2.0, 2.0, 1.0 )
 ];
 
 var texCoords = [
     // Mynsturhnit fyrir vegg 1
     vec2(  0.0, 0.0 ),
     vec2( 400.0, 0.0 ),
-    vec2( 400.0, 1.0 ),
-    vec2( 400.0, 1.0 ),
-    vec2(  0.0, 1.0 ),
+    vec2( 400.0, 4.0 ),
+    vec2( 400.0, 4.0 ),
+    vec2(  0.0, 4.0 ),
     vec2(  0.0, 0.0 ),
     // Mynsturhnit fyrir gólf
     vec2(  0.0,  0.0 ),
-    vec2( 500.0,  0.0 ),
-    vec2( 500.0, 10.0 ),
-    vec2( 500.0, 10.0 ),
-    vec2(  0.0, 10.0 ),
+    vec2( 100.0,  0.0 ),
+    vec2( 100.0, 3.0 ),
+    vec2( 100.0, 3.0 ),
+    vec2(  0.0, 3.0 ),
     vec2(  0.0,  0.0 ),
     // Mynsturhnit fyrir vegg 2
     vec2(  0.0, 0.0 ),
     vec2( 400.0, 0.0 ),
-    vec2( 400.0, 1.0 ),
-    vec2( 400.0, 1.0 ),
-    vec2(  0.0, 1.0 ),
-    vec2(  0.0, 0.0 )
+    vec2( 400.0, 4.0 ),
+    vec2( 400.0, 4.0 ),
+    vec2(  0.0, 4.0 ),
+    vec2(  0.0, 0.0 ),
+    // Mynsturhnit fyrir loft
+    vec2(  0.0,  0.0 ),
+    vec2( 200.0,  0.0 ),
+    vec2( 200.0, 10.0 ),
+    vec2( 200.0, 10.0 ),
+    vec2(  0.0, 10.0 ),
+    vec2(  0.0,  0.0 ),
 ];
 
 
@@ -144,6 +161,18 @@ window.onload = function init() {
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, golfImage );
     gl.generateMipmap( gl.TEXTURE_2D );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
+
+    // Lesa inn og skilgreina mynstur fyrir loft
+    var ceilImage = document.getElementById("CeilingImage");
+    texCeil = gl.createTexture();
+    gl.bindTexture( gl.TEXTURE_2D, texCeil );
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    gl.texImage2D( gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, ceilImage );
+    gl.generateMipmap( gl.TEXTURE_2D );
+    gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT );
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR );
     gl.texParameteri( gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR );
     
@@ -182,13 +211,15 @@ window.onload = function init() {
          switch( e.keyCode ) {
             case 87:	// w
                 userXPos += userIncr * userXDir;
-                userZPos += userIncr * userZDir;;
+                userZPos += userIncr * userZDir;
                 break;
             case 83:	// s
+
                 userXPos -= userIncr * userXDir;
                 userZPos -= userIncr * userZDir;;
                 break;
             case 65:	// a
+
                 userXPos += userIncr * userZDir;
                 userZPos -= userIncr * userXDir;;
                 break;
@@ -235,6 +266,10 @@ var render = function(){
     // Teikna vegg 2 með mynstri
     gl.bindTexture( gl.TEXTURE_2D, texVegg );
     gl.drawArrays( gl.TRIANGLES, numVertices*2, numVertices );
+
+    // Teikna loft með mynstri
+    gl.bindTexture( gl.TEXTURE_2D, texCeil );
+    gl.drawArrays( gl.TRIANGLES, numVertices*3, numVertices );
 
     requestAnimFrame(render);
 }
